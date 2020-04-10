@@ -1,5 +1,7 @@
 import argparse
 import shlex
+from os import listdir
+from os.path import isfile, join
 from subprocess import Popen, PIPE
 
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
@@ -10,8 +12,12 @@ parser.add_argument('sv_folder', metavar='sv_folder',
 #                   help='sum the integers (default: find the max)')
 
 args = parser.parse_args()
-print(args.sv_folder)
 
+sv_files = [f for f in listdir(args.sv_folder) if isfile(join(args.sv_folder, f))]
+
+print(sv_files)
+
+print("Preprocessing files...")
 # preprocessing of the files
 # problems with no svlen?
 # bcftools query -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND\tGT\t[ %GT]\n' Manta.vcf > MantaxD.vcf
