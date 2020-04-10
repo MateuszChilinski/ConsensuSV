@@ -23,7 +23,7 @@ print("Preprocessing files...")
 # problems with no svlen?
 os.mkdir("temp");
 for file in sv_files:
-    cmd = "bcftools query -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND\tGT\t[ %GT]\n' "+args.sv_folder+file+" > temp/"+file
+    cmd = r"bcftools query -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND\tGT\t[ %GT]\n' "+args.sv_folder+file+" > temp/"+file
     print(cmd)
     process = Popen(shlex.split(cmd), shell=True, stdout=PIPE)
     process.communicate()
