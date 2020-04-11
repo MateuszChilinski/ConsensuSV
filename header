@@ -40,3 +40,4 @@
 ##contig=<ID=chrY,len=57227415>
 ##fileDate=11042020
 ##reference=GRCh38_full_analysis_set_plus_decoy_hla
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	SAMPLENAME
