@@ -6,6 +6,29 @@ from os.path import isfile, join
 from subprocess import Popen, PIPE
 from shutil import copyfile
 
+def reheader_all():
+    # create temp header with sample name
+    copyfile("header", "header_temp")
+    fin = open("header_temp", "rt")
+    data = fin.read()
+    data = data.replace('SAMPLENAME', args.sample_name)
+    fin.close()
+    fin = open("header_temp", "wt")
+    fin.write(data)
+    fin.close()
+
+    # reheader all files
+    for file in sv_files:
+        cmd = r"bcftools reheader -h header_temp -o temp/" + file + " " + args.sv_folder + file
+        if(debug):
+            print(cmd)
+
+        process = Popen(cmd, shell=True, stdout=PIPE)
+        process.communicate()
+        exit_code = process.wait()
+    os.remove("header_temp")
+
+
 debug = 1
 
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
@@ -13,9 +36,6 @@ parser.add_argument('sv_folder', metavar='sv_folder',
                    help='folder consisting the vcf files')
 parser.add_argument('sample_name', metavar='sample_name',
                    help='name of the sample')
-#parser.add_argument('--sum', dest='accumulate', action='store_const',
-#                   const=sum, default=max,
-#                   help='sum the integers (default: find the max)')
 
 args = parser.parse_args()
 
@@ -28,26 +48,7 @@ print("Preprocessing files...")
 # problems with no svlen?
 os.mkdir("temp");
 
-# create temp header with sample name
-copyfile("header", "header_temp")
-fin = open("header_temp", "rt")
-data = fin.read()
-data = data.replace('SAMPLENAME', args.sample_name)
-fin.close()
-fin = open("header_temp", "wt")
-fin.write(data)
-fin.close()
-
-# reheader all files
-for file in sv_files:
-    cmd = r"bcftools reheader -h header_temp -o temp/" + file + " " + args.sv_folder + file
-    if(debug):
-        print(cmd)
-
-    process = Popen(cmd, shell=True, stdout=PIPE)
-    process.communicate()
-    exit_code = process.wait()
-os.remove("header_temp")
+reheader_all()
 
 sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
 
@@ -67,3 +68,4 @@ for file in sv_files:
     process.communicate()
     exit_code = process.wait()
 
+reheader_all()
