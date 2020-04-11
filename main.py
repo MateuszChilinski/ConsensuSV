@@ -25,7 +25,7 @@ os.mkdir("temp");
 
 # reheader all files
 for file in sv_files:
-    cmd = r"bcftools reheader -h header " +args.sv_folder+file+ " > temp/"+file
+    cmd = r"bcftools reheader -h header -o temp/" + file + " " + args.sv_folder + file
 
     process = Popen(cmd, shell=True, stdout=PIPE)
     process.communicate()
