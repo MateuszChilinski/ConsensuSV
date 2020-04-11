@@ -59,7 +59,7 @@ for file in sv_files:
         additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=0,0;CIEND=0,0"
     else:
         additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
-    cmd = r"bcftools query -H -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[ %GT]\n' -o temp/"+file+" temp/"+file    
+    cmd = r"bcftools query -H -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[ %GT]\n' -o temp/"+file+"_2 temp/"+file    
     if(debug):
         print(cmd)
 
@@ -67,4 +67,4 @@ for file in sv_files:
     process.communicate()
     exit_code = process.wait()
 
-reheader_all("temp/", "temp/")
+#reheader_all("temp/", "temp/")
