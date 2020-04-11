@@ -19,7 +19,7 @@ def reheader_all(dirFrom, dirTo):
 
     # reheader all files
     for file in sv_files:
-        cmd = r"bcftools reheader -h header_temp -o " + dirFrom + file + " " + dirTo + file
+        cmd = r"bcftools reheader -h header_temp -o " + dirTo + file + " " + dirFrom + file
         if(debug):
             print(cmd)
 
