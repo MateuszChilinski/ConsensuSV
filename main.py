@@ -5,6 +5,8 @@ from os import listdir
 from os.path import isfile, join
 from subprocess import Popen, PIPE
 
+debug = 1
+
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
 parser.add_argument('sv_folder', metavar='sv_folder',
                    help='folder consisting the vcf files')
@@ -26,7 +28,8 @@ os.mkdir("temp");
 # reheader all files
 for file in sv_files:
     cmd = r"bcftools reheader -h header -o temp/" + file + " " + args.sv_folder + file
-    print(cmd)
+    if(debug):
+        print(cmd)
 
     process = Popen(cmd, shell=True, stdout=PIPE)
     process.communicate()
@@ -42,9 +45,11 @@ for file in sv_files:
         additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=0,0;CIEND=0,0"
     else:
         additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
-    cmd = r"bcftools query -h header -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[ %GT]\n' temp/"+file+" > temp/"+file
+    cmd = r"bcftools query -h header -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[ %GT]\n' temp/"+file+" > temp/"+file+"_2"
     
-    print(cmd)
+    if(debug):
+        print(cmd)
+
     process = Popen(cmd, shell=True, stdout=PIPE)
     process.communicate()
     exit_code = process.wait()
