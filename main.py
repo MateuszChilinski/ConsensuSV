@@ -11,7 +11,7 @@ def generate_header(sample_name):
     data = fin.read()
     data = data.replace('SAMPLENAME', sample_name)
     fin.close()
-    return data
+    return data+"\n"
 
 
 def reheader_all(dirFrom, dirTo):
@@ -61,17 +61,15 @@ reheader_all(args.sv_folder, "temp/")
 sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
 
 for file in sv_files:
-    additional_filters = ""
 
-    if file == "fusor.vcf":
-        additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=0,0;CIEND=0,0"
-    else:
-        additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
+    additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
+
     cmd = r"bcftools query -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[ %GT]\n' -o temp/"+file+"_2 temp/"+file    
     if(debug):
         print(cmd)
-
-    process = Popen(cmd, shell=True, stdout=PIPE)
+        process = Popen(cmd, shell=True, stdout=PIPE)
+    else:
+        process = Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     process.communicate()
     exit_code = process.wait()
     os.replace("temp/"+file+"_2", "temp/"+file)
@@ -82,3 +80,5 @@ for file in sv_files:
     with open("temp/"+file, 'w') as fout:
         fout.write(header)
         fout.writelines(data[1:])
+
+# all files are preprocessed now in unified form
