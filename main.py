@@ -66,5 +66,6 @@ for file in sv_files:
     process = Popen(cmd, shell=True, stdout=PIPE)
     process.communicate()
     exit_code = process.wait()
+    os.replace("temp/"+file+"_2", "temp/"+file)
 
-#reheader_all("temp/", "temp/")
+reheader_all("temp/", "temp/")
