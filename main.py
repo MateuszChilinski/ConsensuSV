@@ -6,6 +6,14 @@ from os.path import isfile, join
 from subprocess import Popen, PIPE
 from shutil import copyfile
 
+def generate_header(sample_name):
+    fin = open("header", "rt")
+    data = fin.read()
+    data = data.replace('SAMPLENAME', sample_name)
+    fin.close()
+    return data
+
+
 def reheader_all(dirFrom, dirTo):
     # create temp header with sample name
     copyfile("header", "header_temp")
@@ -67,5 +75,10 @@ for file in sv_files:
     process.communicate()
     exit_code = process.wait()
     os.replace("temp/"+file+"_2", "temp/"+file)
-
-reheader_all("temp/", "temp/")
+    
+    header = generate_header(args.sample_name)
+    with open("temp/"+file, 'r') as fin:
+        data = fin.read().splitlines(True)
+    with open("temp/"+file, 'w') as fout:
+        fout.write(header)
+        fout.writelines(data[1:])
