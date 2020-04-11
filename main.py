@@ -22,8 +22,27 @@ print("Preprocessing files...")
 # preprocessing of the files
 # problems with no svlen?
 os.mkdir("temp");
+
+# reheader all files
 for file in sv_files:
-    cmd = r"bcftools query -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND\tGT\t[ %GT]\n' "+args.sv_folder+file+" > temp/"+file
+    cmd = r"bcftools reheader -h header " +args.sv_folder+file+ " > temp/"+file
+
+    process = Popen(cmd, shell=True, stdout=PIPE)
+    process.communicate()
+    exit_code = process.wait()
+
+
+sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
+
+for file in sv_files:
+    additional_filters = ""
+
+    if file == "fusor.vcf":
+        additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=0,0;CIEND=0,0"
+    else:
+        additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
+    cmd = r"bcftools query -h header -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+"\tGT\t[ %GT]\n' temp/"+file+" > temp/"+file
+    
     print(cmd)
     process = Popen(cmd, shell=True, stdout=PIPE)
     process.communicate()
