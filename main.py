@@ -34,7 +34,7 @@ fin = open("header_temp", "rt")
 data = fin.read()
 data = data.replace('SAMPLENAME', args.sample_name)
 fin.close()
-fin = open("data.txt", "wt")
+fin = open("header_temp", "wt")
 fin.write(data)
 fin.close()
 
