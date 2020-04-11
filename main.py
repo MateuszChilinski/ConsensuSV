@@ -62,7 +62,7 @@ sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
 
 for file in sv_files:
     # awk -F '\t' '{ $4 = ($4 == "\." ? "N" : $4) } 1' OFS='\t' novoBreak.vcf
-    cmd = r"awk -F '\t' '{ $4 = ($4 == \"\.\" ? \"N\" : $4) } 1' OFS='\t' " + file + " > " + file + "_2"
+    cmd = "awk -F " + r"'\t'" + " '{ $4 = ($4 == \"\.\" ? \"N\" : $4) } 1' OFS=" + r"'\t' " + file + " > " + file + "_2"
     if(debug):
         print(cmd)
     process = Popen(cmd, shell=True, stdout=PIPE)
