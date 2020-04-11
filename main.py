@@ -6,7 +6,7 @@ from os.path import isfile, join
 from subprocess import Popen, PIPE
 from shutil import copyfile
 
-def reheader_all():
+def reheader_all(dirFrom, dirTo):
     # create temp header with sample name
     copyfile("header", "header_temp")
     fin = open("header_temp", "rt")
@@ -19,7 +19,7 @@ def reheader_all():
 
     # reheader all files
     for file in sv_files:
-        cmd = r"bcftools reheader -h header_temp -o temp/" + file + " " + args.sv_folder + file
+        cmd = r"bcftools reheader -h header_temp -o " + dirFrom + file + " " + dirTo + file
         if(debug):
             print(cmd)
 
@@ -48,7 +48,7 @@ print("Preprocessing files...")
 # problems with no svlen?
 os.mkdir("temp");
 
-reheader_all()
+reheader_all(args.sv_folder, "temp/")
 
 sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
 
@@ -59,8 +59,7 @@ for file in sv_files:
         additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=0,0;CIEND=0,0"
     else:
         additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
-    cmd = r"bcftools query -H -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[ %GT]\n' temp/"+file+" > temp/"+file+"_2"
-    
+    cmd = r"bcftools query -H -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[ %GT]\n' -o temp/"+file+" temp/"+file    
     if(debug):
         print(cmd)
 
@@ -68,4 +67,4 @@ for file in sv_files:
     process.communicate()
     exit_code = process.wait()
 
-reheader_all()
+reheader_all("temp/", "temp/")
