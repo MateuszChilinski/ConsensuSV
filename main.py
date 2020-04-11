@@ -61,10 +61,18 @@ reheader_all(args.sv_folder, "temp/")
 sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
 
 for file in sv_files:
-
+    # awk -F '\t' '{ $4 = ($4 == "\." ? "N" : $4) } 1' OFS='\t' novoBreak.vcf
+    cmd = r"awk -F '\t' '{ $4 = ($4 == \"\.\" ? \"N\" : $4) } 1' OFS='\t' " + file + " > " + file + "_2"
+    if(debug):
+        print(cmd)
+    process = Popen(cmd, shell=True, stdout=PIPE)
+    process.communicate()
+    exit_code = process.wait()
+    
+    # ensures there are no . in ref
     additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
 
-    cmd = r"bcftools query -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[%GT]\n' -o temp/"+file+"_2 temp/"+file    
+    cmd = r"bcftools query -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[%GT]\n' -o temp/"+file+" temp/"+file+"_2"    
     if(debug):
         print(cmd)
         process = Popen(cmd, shell=True, stdout=PIPE)
@@ -72,8 +80,8 @@ for file in sv_files:
         process = Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     process.communicate()
     exit_code = process.wait()
-    os.replace("temp/"+file+"_2", "temp/"+file)
-    
+    #os.replace("temp/"+file+"_2", "temp/"+file)
+    os.remove("temp/"+file+"_2")
     header = generate_header(args.sample_name)
     with open("temp/"+file, 'r') as fin:
         data = fin.read().splitlines(True)
