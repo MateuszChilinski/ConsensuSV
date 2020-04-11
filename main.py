@@ -6,6 +6,8 @@ from os.path import isfile, join
 from subprocess import Popen, PIPE
 from shutil import copyfile
 
+debug = 1
+
 def generate_header(sample_name):
     fin = open("header", "rt")
     data = fin.read()
@@ -13,6 +15,13 @@ def generate_header(sample_name):
     fin.close()
     return data+"\n"
 
+def execute_command(cmd):
+    if(debug):
+        print(cmd)
+        process = Popen(cmd, shell=True, stdout=PIPE)
+    else:
+        process = Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
+    process.communicate()
 
 def reheader_all(dirFrom, dirTo):
     # create temp header with sample name
@@ -37,7 +46,6 @@ def reheader_all(dirFrom, dirTo):
     os.remove("header_temp")
 
 
-debug = 1
 
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
 parser.add_argument('sv_folder', metavar='sv_folder',
@@ -62,24 +70,21 @@ sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
 
 for file in sv_files:
     # awk -F '\t' '{ $4 = ($4 == "\." ? "N" : $4) } 1' OFS='\t' novoBreak.vcf
+
+    cmd = "sed -i '/:ME:/d' temp/" + file
+    execute_command(cmd)
+
     cmd = "awk -F " + r"'\t'" + " '{ $4 = ($4 == \"\.\" ? \"N\" : $4) } 1' OFS=" + r"'\t' temp/" + file + " > temp/" + file + "_2"
-    if(debug):
-        print(cmd)
-    process = Popen(cmd, shell=True, stdout=PIPE)
-    process.communicate()
-    exit_code = process.wait()
+    execute_command(cmd)
     
+    # remove MEI if there are any
+
     # ensures there are no . in ref
     additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
 
     cmd = r"bcftools query -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50)' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[%GT]\n' -o temp/"+file+" temp/"+file+"_2"    
-    if(debug):
-        print(cmd)
-        process = Popen(cmd, shell=True, stdout=PIPE)
-    else:
-        process = Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
-    process.communicate()
-    exit_code = process.wait()
+    execute_command(cmd)
+
     #os.replace("temp/"+file+"_2", "temp/"+file)
     os.remove("temp/"+file+"_2")
     header = generate_header(args.sample_name)
