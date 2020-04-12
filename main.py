@@ -90,6 +90,7 @@ class SVTool:
             while line:
                 if not(line.startswith('#')):
                     sv = SVariant(line)
+                    sv.print()
                     self.sv_list.add(sv)
 
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
