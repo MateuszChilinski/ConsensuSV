@@ -200,7 +200,7 @@ for svtool in sv_tools:
         
         freqDict = dict()
         for candidate in candidates:
-            if key not in d:
+            if key not in freqDict:
                 freqDict[str(candidate.pos)+"-"+str(candidate.end)] = 1
             else:
                 freqDict[str(candidate.pos)+"-"+str(candidate.end)] += 1
