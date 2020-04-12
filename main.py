@@ -193,9 +193,26 @@ for svtool in sv_tools:
             for sv2 in svtool2.sv_list:
                 if(sv.checkOverlap(sv2)):
                    candidates.append(sv2)
-        print(sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
+        if(candidates.count() < 3): # if fewer than 3 then no point in checking it out
+            continue
+
+        #print(sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
+        
+        freqDict = dict()
         for candidate in candidates:
+            if key not in d:
+                freqDict[str(candidate.pos)+"-"+str(candidate.end)] = 1
+            else:
+                freqDict[str(candidate.pos)+"-"+str(candidate.end)]++
             # create unified one
-            print("\t" + candidate.svtype + " " + str(candidate.pos) + " - " + str(candidate.end))
+            #print("\t" + candidate.svtype + " " + str(candidate.pos) + " - " + str(candidate.end))
             # maybe remove all candidates from svtool once consensus was established based on it?
+        majorityFound = False
+        for key in freqDict:
+            if(freqDict[key]/candidates.count() >= 0.7):
+                print(sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
+                majorityFound = True
+                break
+        if(majorityFound):
+            break
 # all files are preprocessed now in unified form
