@@ -84,6 +84,8 @@ class SVariant:
     def print_sv(self):
         print(self.svtype + ": " + self.chrom + " " + str(self.pos) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " - " + str(self.end) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " LEN: " + str(self.svlen) + " GT: " + self.gt)
     def checkOverlap(self, sv2):
+        if(self.chrom != sv.chrom2):
+            return False
         # bear in mind that cipos first coord is negative, hence just addition (example cipos=-10,10)
         minPos1 = self.pos+self.cipos1
         maxPos1 = self.pos+self.cipos2
@@ -182,8 +184,9 @@ for svtool in sv_tools:
             for sv2 in svtool2.sv_list:
                 if(sv.checkOverlap(sv2)):
                    candidates.append(sv2)
-        print(str(sv.pos) + " - " + str(sv.end))
+        print(sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
         for candidate in candidates:
-            print("\t" + str(candidate.pos) + " - " + str(candidate.end))
-
+            # create unified one
+            print("\t" + candidate.svtype + " " + str(candidate.pos) + " - " + str(candidate.end))
+            # maybe remove all candidates from svtool once consensus was established based on it?
 # all files are preprocessed now in unified form
