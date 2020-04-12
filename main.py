@@ -211,7 +211,7 @@ for svtool in sv_tools:
             # maybe remove all candidates from svtool once consensus was established based on it?
         majorityFound = False
         for key in freqDict:
-            if(freqDict[key]/len(candidates) >= 0.5):
+            if(freqDict[key]/len(candidates) >= 0.7):
                 print(sv.chrom + " " + sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
                 majorityFound = True
                 break
