@@ -82,7 +82,7 @@ class SVariant:
         self.ciend2 = int(ciend[1])
 
     def print_sv(self):
-        print(self.svtype + ": " + self.chrom + " " + self.pos + "(" + self.cipos1 +", " + self.cipos2 + ")" + " - " + self.end + "(" + self.cipos1 +", " + self.cipos2 + ")" + " LEN: " + self.svlen + " GT: " + self.gt)
+        print(self.svtype + ": " + self.chrom + " " + str(self.pos) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " - " + str(self.end) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " LEN: " + str(self.svlen) + " GT: " + self.gt)
 
 class SVTool:
     def __init__(self, filename):
