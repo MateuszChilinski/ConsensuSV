@@ -203,7 +203,7 @@ for svtool in sv_tools:
             if key not in d:
                 freqDict[str(candidate.pos)+"-"+str(candidate.end)] = 1
             else:
-                freqDict[str(candidate.pos)+"-"+str(candidate.end)]++
+                freqDict[str(candidate.pos)+"-"+str(candidate.end)] += 1
             # create unified one
             #print("\t" + candidate.svtype + " " + str(candidate.pos) + " - " + str(candidate.end))
             # maybe remove all candidates from svtool once consensus was established based on it?
