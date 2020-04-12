@@ -112,7 +112,7 @@ class SVTool:
                     sv = SVariant(line)
                     if(abs(sv.ciend2-sv.ciend1) > self.max_conf or abs(sv.cipos2-sv.cipos1) > self.max_conf):
                         continue
-                    print(self.tool + " | ", end = '')
+                    #print(self.tool + " | ", end = '')
                     #sv.print_sv()
                     self.sv_list.append(sv)
 
