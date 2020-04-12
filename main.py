@@ -1,6 +1,7 @@
 import argparse
 import shlex
 import os
+
 from os import listdir
 from os.path import isfile, join
 from subprocess import Popen, PIPE
@@ -87,7 +88,7 @@ class SVTool:
         with open(filename) as file:
             line = file.readline()
             while line:
-                if not(text.startswith('#')):
+                if not(line.startswith('#')):
                     sv = SVariant(line)
                     self.sv_list.add(sv)
 
