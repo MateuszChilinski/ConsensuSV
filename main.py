@@ -52,15 +52,16 @@ class SVariant:
     def parse_line(self, line):
         values = line.split("\t")
         self.chrom = values[0]
-        self.pos = values[1]
+        self.pos = int(values[1])
         info = values[7].split(";")
         self.gt = values[9]
 
-        self.end = info[0].split("=")[1]
+        self.end = int(info[0].split("=")[1])
         self.svlen = info[1].split("=")[1]
 
         if(self.svlen == "."):
             self.svlen = self.end-self.pos
+        self.svlen = int(self.svlen)
 
         self.svtype = info[2].split("=")[1]
         cipos = info[3].split("=")[1]
@@ -74,11 +75,11 @@ class SVariant:
         cipos = cipos.split(",")
         ciend = ciend.split(",")
 
-        self.cipos1 = cipos[0]
-        self.cipos2 = cipos[1]
+        self.cipos1 = int(cipos[0])
+        self.cipos2 = int(cipos[1])
 
-        self.ciend1 = ciend[0]
-        self.ciend2 = ciend[1]
+        self.ciend1 = int(ciend[0])
+        self.ciend2 = int(ciend[1])
 
     def print_sv(self):
         print(self.svtype + ": " + self.chrom + " " + self.pos + "(" + self.cipos1 +", " + self.cipos2 + ")" + " - " + self.end + "(" + self.cipos1 +", " + self.cipos2 + ")" + " LEN: " + self.svlen + " GT: " + self.gt)
