@@ -83,6 +83,21 @@ class SVariant:
 
     def print_sv(self):
         print(self.svtype + ": " + self.chrom + " " + str(self.pos) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " - " + str(self.end) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " LEN: " + str(self.svlen) + " GT: " + self.gt)
+    def checkOverlap(self, sv2):
+        # bear in mind that cipos first coord is negative, hence just addition (example cipos=-10,10)
+        minPos1 = self.pos+self.cipos1
+        maxPos1 = self.pos+self.cipos2
+        minPos2 = sv2.pos+sv2.cipos1
+        maxPos2 = sv2.pos+sv2.cipos2
+
+        minEnd1 = self.end+self.ciend1
+        maxEnd1 = self.end+self.ciend2
+        minEnd2 = sv2.end+self.ciend1
+        maxEnd2 = sv2.end+self.ciend2
+        if(max(minPos1, minPos2) <= min(maxPos1, maxPos2)):
+            if(max(minEnd1, minEnd2) <= min(maxEnd1, maxEnd2)):
+                return True
+        return False
 
 class SVTool:
     max_conf = 200 # max confidence interval length
@@ -154,5 +169,21 @@ for file in sv_files:
         fout.writelines(data[1:])
     svtool = SVTool("temp/"+file)
     sv_tools.append(svtool)
+
+percDiff = 0.1
+
+for svtool in sv_tools:
+    for sv in svtool.sv_list:
+        candidates = list()
+        candidates.append(sv)
+        for svtool2 in sv_tools:
+            if(svtool.tool == svtool2.tool):
+                continue
+            for sv2 in svtool2.sv_list:
+                if(sv.checkOverlap(sv2)):
+                   candidates.append(sv2)
+        print(sv.pos + " - " + sv.end)
+        for candidate in candidates:
+            print("\t" + candidate.pos + " - " + candidate.end)
 
 # all files are preprocessed now in unified form
