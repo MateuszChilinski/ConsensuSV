@@ -60,7 +60,7 @@ class SVariant:
         self.svlen = info[1].split("=")[1]
 
         if(self.svlen == "."):
-            self.svlen = end-pos
+            self.svlen = self.end-self.pos
 
         self.svtype = info[2].split("=")[1]
         cipos = info[3].split("=")[1]
