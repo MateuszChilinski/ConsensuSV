@@ -58,7 +58,7 @@ class SVariant:
         end = info[0]
         svlen = info[1]
 
-        if(svlen == )
+        #if(svlen == 0)
         return
 
 
