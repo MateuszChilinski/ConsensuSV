@@ -212,7 +212,7 @@ for svtool in sv_tools:
         majorityFound = False
         for key in freqDict:
             if(freqDict[key]/len(candidates) >= 0.5):
-                print(sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
+                print(sv.chrom + " " + sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
                 majorityFound = True
                 break
         if(majorityFound):
