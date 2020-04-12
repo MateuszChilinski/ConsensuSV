@@ -46,7 +46,7 @@ def reheader_all(dirFrom, dirTo):
     os.remove("header_temp")
 
 class SVariant:
-    def __init__(line):
+    def __init__(self, line):
         self.parse_line(line)
     def parse_line(self, line):
         values = line.split("\t")
@@ -80,16 +80,16 @@ class SVariant:
         print(self.svtype + ": " + self.chrom + " " + self.pos + "(" + self.cipos1 +", " + self.cipos2 + ")" + " - " + self.end + "(" + self.cipos1 +", " + self.cipos2 + ")" + " LEN: " + self.svlen + " GT: " + self.gt)
 
 class SVTool:
-    def __init__(filename):
-        parse_file(filename)
-    def parse_file(filename):
-        sv_list = list()
+    def __init__(self, filename):
+        self.parse_file(filename)
+    def parse_file(self, filename):
+        self.sv_list = list()
         with open(filename) as file:
             line = file.readline()
             while line:
                 if not(text.startswith('#')):
                     sv = SVariant(line)
-                    sv_list.add(sv)
+                    self.sv_list.add(sv)
 
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
 parser.add_argument('sv_folder', metavar='sv_folder',
