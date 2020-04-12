@@ -85,6 +85,7 @@ class SVariant:
         print(self.svtype + ": " + self.chrom + " " + str(self.pos) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " - " + str(self.end) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " LEN: " + str(self.svlen) + " GT: " + self.gt)
 
 class SVTool:
+    max_conf = 200 # max confidence interval length
     def __init__(self, filename):
         self.parse_file(filename)
     def parse_file(self, filename):
@@ -93,6 +94,8 @@ class SVTool:
             for line in file:
                 if not(line.startswith('#')):
                     sv = SVariant(line)
+                    if(abs(sv.ciend2-sv.ciend1) > max_conf or abs(sv.cipos2-sv.cipos1) > max_conf):
+                        continue
                     sv.print_sv()
                     self.sv_list.append(sv)
 
