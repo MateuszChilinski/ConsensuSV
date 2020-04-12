@@ -63,7 +63,7 @@ class SVariant:
             self.svlen = self.end-self.pos
         self.svlen = int(self.svlen)
 
-        self.svtype = info[2].split("=")[1]
+        self.svtype = self.parse_type(info[2].split("=")[1])
         cipos = info[3].split("=")[1]
         ciend = info[4].split("=")[1]
 
@@ -80,7 +80,16 @@ class SVariant:
 
         self.ciend1 = int(ciend[0])
         self.ciend2 = int(ciend[1])
-
+    def parse_type(self, type):
+        if "del" in type.casefold():
+            return "DEL"
+        if "inv" in type.casefold():
+            return "INV"
+        if "ins" in type.casefold():
+            return "INS"
+        if "dup" in type.casefold():
+            return "DUP"
+        return "UNK"
     def print_sv(self):
         print(self.svtype + ": " + self.chrom + " " + str(self.pos) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " - " + str(self.end) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " LEN: " + str(self.svlen) + " GT: " + self.gt)
     def checkOverlap(self, sv2):
