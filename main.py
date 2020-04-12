@@ -47,20 +47,49 @@ def reheader_all(dirFrom, dirTo):
 
 class SVariant:
     def __init__(line):
-        parse_line(line)
-    def parse_line(line):
+        self.parse_line(line)
+    def parse_line(self, line):
         values = line.split("\t")
-        chrom = values[0]
-        pos = values[1]
+        self.chrom = values[0]
+        self.pos = values[1]
         info = values[7].split(";")
-        gt = values[9]
+        self.gt = values[9]
 
-        end = info[0]
-        svlen = info[1]
+        self.end = info[0]
+        self.svlen = info[1]
 
-        #if(svlen == 0)
+        if(self.svlen == "."):
+            self.svlen = end-pos
+
+        self.svtype = info[2]
+        self.cipos = info[3].split(",")
+        self.ciend = info[4].split(",")
+        
+        if(self.cipos == "."):
+            self.cipos = "-10,10" # maybe other values? 0s?
+        self.cipos1 = cipos[0]
+        self.cipos2 = cipos[1]
+
+        if(self.ciend == "."):
+            self.ciend = "-10,10" # maybe other values? 0s?
+        self.ciend1 = ciend[0]
+        self.ciend2 = ciend[1]
+
         return
+    def print(self):
+        print(self.svtype + ": " + self.chrom + " " + self.pos + "(" + self.cipos1 +", " + self.cipos2 + ")" + " - " + self.end + "(" + self.cipos1 +", " + self.cipos2 + ")" + " LEN: " + self.svlen + " GT: " + self.gt)
 
+class SVTool:
+    def __init__(filename):
+        parse_file(filename)
+    def parse_file(filename):
+        sv_list = list()
+        with open(filename) as file:
+            line = file.readline()
+            while line:
+                if not(text.startswith('#')):
+                    sv = SVariant(line)
+                    sv_list.add(sv)
 
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
 parser.add_argument('sv_folder', metavar='sv_folder',
@@ -111,5 +140,6 @@ for file in sv_files:
     with open("temp/"+file, 'w') as fout:
         fout.write(header)
         fout.writelines(data[1:])
+    svtool = SVTool("temp/"+file)
 
 # all files are preprocessed now in unified form
