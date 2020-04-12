@@ -89,7 +89,7 @@ class SVTool:
                 if not(line.startswith('#')):
                     sv = SVariant(line)
                     sv.print_sv()
-                    self.sv_list.add(sv)
+                    self.sv_list.append(sv)
 
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
 parser.add_argument('sv_folder', metavar='sv_folder',
