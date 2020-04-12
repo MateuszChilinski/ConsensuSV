@@ -85,8 +85,7 @@ class SVTool:
     def parse_file(self, filename):
         self.sv_list = list()
         with open(filename) as file:
-            line = file.readline()
-            while line:
+            for line in file:
                 if not(line.startswith('#')):
                     sv = SVariant(line)
                     sv.print_sv()
