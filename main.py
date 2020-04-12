@@ -217,4 +217,5 @@ for svtool in sv_tools:
                 break
         if(majorityFound):
             continue
+        print("Job for NN")
 # all files are preprocessed now in unified form
