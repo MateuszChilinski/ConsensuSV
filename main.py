@@ -76,8 +76,7 @@ class SVariant:
         self.ciend1 = ciend[0]
         self.ciend2 = ciend[1]
 
-        return
-    def print(self):
+    def print_sv(self):
         print(self.svtype + ": " + self.chrom + " " + self.pos + "(" + self.cipos1 +", " + self.cipos2 + ")" + " - " + self.end + "(" + self.cipos1 +", " + self.cipos2 + ")" + " LEN: " + self.svlen + " GT: " + self.gt)
 
 class SVTool:
@@ -90,7 +89,7 @@ class SVTool:
             while line:
                 if not(line.startswith('#')):
                     sv = SVariant(line)
-                    sv.print()
+                    sv.print_sv()
                     self.sv_list.add(sv)
 
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
