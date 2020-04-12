@@ -200,10 +200,11 @@ for svtool in sv_tools:
         
         freqDict = dict()
         for candidate in candidates:
+            key = str(candidate.pos)+"-"+str(candidate.end)
             if key not in freqDict:
-                freqDict[str(candidate.pos)+"-"+str(candidate.end)] = 1
+                freqDict[key] = 1
             else:
-                freqDict[str(candidate.pos)+"-"+str(candidate.end)] += 1
+                freqDict[key] += 1
             # create unified one
             #print("\t" + candidate.svtype + " " + str(candidate.pos) + " - " + str(candidate.end))
             # maybe remove all candidates from svtool once consensus was established based on it?
