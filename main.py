@@ -56,15 +56,15 @@ class SVariant:
         info = values[7].split(";")
         self.gt = values[9]
 
-        self.end = info[0]
-        self.svlen = info[1]
+        self.end = info[0].split("=")[1]
+        self.svlen = info[1].split("=")[1]
 
         if(self.svlen == "."):
             self.svlen = end-pos
 
-        self.svtype = info[2]
-        cipos = info[3].split(",")
-        ciend = info[4].split(",")
+        self.svtype = info[2].split("=")[1]
+        cipos = info[3].split(",").split("=")[1]
+        ciend = info[4].split(",").split("=")[1]
         
         if(cipos == "."):
             cipos = "-10,10" # maybe other values? 0s?
