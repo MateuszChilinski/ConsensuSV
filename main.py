@@ -63,16 +63,20 @@ class SVariant:
             self.svlen = end-pos
 
         self.svtype = info[2].split("=")[1]
-        cipos = info[3].split("=")[1].split(",")
-        ciend = info[4].split("=")[1].split(",")
-        
+        cipos = info[3].split("=")[1]
+        ciend = info[4].split("=")[1]
+
         if(cipos == "."):
             cipos = "-10,10" # maybe other values? 0s?
+        if(ciend == "."):
+            ciend = "-10,10" # maybe other values? 0s?
+
+        cipos = cipos.split(",")
+        ciend = ciend.split(",")
+
         self.cipos1 = cipos[0]
         self.cipos2 = cipos[1]
 
-        if(ciend == "."):
-            ciend = "-10,10" # maybe other values? 0s?
         self.ciend1 = ciend[0]
         self.ciend2 = ciend[1]
 
