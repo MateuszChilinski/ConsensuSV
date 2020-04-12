@@ -87,6 +87,7 @@ class SVariant:
 class SVTool:
     max_conf = 200 # max confidence interval length
     def __init__(self, filename):
+        self.tool = filename.split("/")[1].split(".")[0]
         self.parse_file(filename)
     def parse_file(self, filename):
         self.sv_list = list()
@@ -96,6 +97,7 @@ class SVTool:
                     sv = SVariant(line)
                     if(abs(sv.ciend2-sv.ciend1) > self.max_conf or abs(sv.cipos2-sv.cipos1) > self.max_conf):
                         continue
+                    print(self.tool + " | ", end = '')
                     sv.print_sv()
                     self.sv_list.append(sv)
 
@@ -119,6 +121,8 @@ os.mkdir("temp");
 reheader_all(args.sv_folder, "temp/")
 
 sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
+
+sv_tools = list()
 
 for file in sv_files:
     # awk -F '\t' '{ $4 = ($4 == "\." ? "N" : $4) } 1' OFS='\t' novoBreak.vcf
@@ -149,5 +153,6 @@ for file in sv_files:
         fout.write(header)
         fout.writelines(data[1:])
     svtool = SVTool("temp/"+file)
+    sv_tools.append(svtool)
 
 # all files are preprocessed now in unified form
