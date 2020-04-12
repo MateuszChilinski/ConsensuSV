@@ -193,7 +193,7 @@ for svtool in sv_tools:
             for sv2 in svtool2.sv_list:
                 if(sv.checkOverlap(sv2)):
                    candidates.append(sv2)
-        if(candidates.count() < 3): # if fewer than 3 then no point in checking it out
+        if(len(candidates) < 3): # if fewer than 3 then no point in checking it out
             continue
 
         #print(sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
@@ -209,7 +209,7 @@ for svtool in sv_tools:
             # maybe remove all candidates from svtool once consensus was established based on it?
         majorityFound = False
         for key in freqDict:
-            if(freqDict[key]/candidates.count() >= 0.7):
+            if(freqDict[key]/len(candidates) >= 0.7):
                 print(sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
                 majorityFound = True
                 break
