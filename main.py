@@ -216,5 +216,5 @@ for svtool in sv_tools:
                 majorityFound = True
                 break
         if(majorityFound):
-            break
+            continue
 # all files are preprocessed now in unified form
