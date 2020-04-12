@@ -94,7 +94,7 @@ class SVTool:
             for line in file:
                 if not(line.startswith('#')):
                     sv = SVariant(line)
-                    if(abs(sv.ciend2-sv.ciend1) > max_conf or abs(sv.cipos2-sv.cipos1) > max_conf):
+                    if(abs(sv.ciend2-sv.ciend1) > self.max_conf or abs(sv.cipos2-sv.cipos1) > self.max_conf):
                         continue
                     sv.print_sv()
                     self.sv_list.append(sv)
