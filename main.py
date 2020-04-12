@@ -45,6 +45,21 @@ def reheader_all(dirFrom, dirTo):
         exit_code = process.wait()
     os.remove("header_temp")
 
+class SVariant:
+    def __init__(line):
+        parse_line(line)
+    def parse_line(line):
+        values = line.split("\t")
+        chrom = values[0]
+        pos = values[1]
+        info = values[7].split(";")
+        gt = values[9]
+
+        end = info[0]
+        svlen = info[1]
+
+        if(svlen == )
+        return
 
 
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
@@ -85,7 +100,7 @@ for file in sv_files:
     # ensures there are no . in ref
     additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
 
-    cmd = r"bcftools query -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(QUAL >= 50 || QUAL = " + "\".\"" + r") && ((SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50))' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[%GT]\n' -o temp/"+file+" temp/"+file+"_2"    
+    cmd = r"bcftools query -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(QUAL >= 50 || QUAL = " + "\".\"" + r") && ((SVLEN = " + "\".\"" + r") || (SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50))' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[%GT]\n' -o temp/"+file+" temp/"+file+"_2"    
     execute_command(cmd)
 
     #os.replace("temp/"+file+"_2", "temp/"+file)
