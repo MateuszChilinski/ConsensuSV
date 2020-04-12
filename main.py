@@ -113,7 +113,7 @@ class SVTool:
                     if(abs(sv.ciend2-sv.ciend1) > self.max_conf or abs(sv.cipos2-sv.cipos1) > self.max_conf):
                         continue
                     print(self.tool + " | ", end = '')
-                    sv.print_sv()
+                    #sv.print_sv()
                     self.sv_list.append(sv)
 
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
@@ -182,8 +182,8 @@ for svtool in sv_tools:
             for sv2 in svtool2.sv_list:
                 if(sv.checkOverlap(sv2)):
                    candidates.append(sv2)
-        print(sv.pos + " - " + sv.end)
+        print(str(sv.pos) + " - " + str(sv.end))
         for candidate in candidates:
-            print("\t" + candidate.pos + " - " + candidate.end)
+            print("\t" + str(candidate.pos) + " - " + str(candidate.end))
 
 # all files are preprocessed now in unified form
