@@ -319,6 +319,6 @@ numpy.set_printoptions(threshold=sys.maxsize)
 
 print("Average abs error: " + str(numpy.average(abs(y_test-y_pred))))
 
-numpy.savetxt("foo.csv", numpy.array((numpy.array(X_test).astype(int).T, numpy.array(y_test).astype(int).T, numpy.array(y_pred).astype(int).T)), delimiter=',', comments="")
+numpy.savetxt("foo.csv", numpy.array((y_test,y_pred)), delimiter=',', comments="")
 
 # all files are preprocessed now in unified form
