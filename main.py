@@ -271,8 +271,8 @@ for svtool in sv_tools:
             if(svtool.tool == svtool2.tool):
                 continue
             for sv2 in svtool2.sv_list:
-                #if(sv2.chrom != "chr1"):
-                #    continue
+                if(sv.chrom != sv2.chrom):
+                    continue
                 if(sv.checkOverlap(sv2)):
                    candidates.append(sv2)
                    break
