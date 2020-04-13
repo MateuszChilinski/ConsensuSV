@@ -192,7 +192,7 @@ def createSVTable():
     sv_tools = list()
 
     for file in sv_files:
-        toolname = file.split("/")[-1]
+        toolname = file.split("/")[-1].split(".")[0]
         print(toolname)
         if(toolname == "truth"):
             continue
