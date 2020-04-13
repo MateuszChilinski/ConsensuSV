@@ -2,6 +2,7 @@ import argparse
 import shlex
 import os
 import numpy
+import sys
 
 from os import listdir
 from os.path import isfile, join
