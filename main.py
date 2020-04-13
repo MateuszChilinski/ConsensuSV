@@ -320,18 +320,20 @@ for svtool in sv_tools:
 
         # maybe remove all candidates from svtool once consensus was established based on it?
         (majorityFound, firstMajor) = findMajority(sv, freqDict, candidates)
+
+        
+        if (args.truth is not None):
+            candidates.remove(sv)
+            X_vector.append(candidates)
+            Y_vector.append(sv)
+
         if(majorityFound):
             newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, -10, 10, -10, 10)
             consensusId += 1
         else:
-            if (args.truth is not None):
-                candidates.remove(sv)
-                X_vector.append(candidates)
-                Y_vector.append(sv)
-            else:
-                print("Job for NN")
+            print("Job for NN")
                 #newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+consensusId, firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, -10, 10, -10, 10)
-                consensusId += 1
+            consensusId += 1
 
 X_preprocessed_vector = preprocess_X(X_vector)
 #print(numpy.array(X_preprocessed_vector))
