@@ -7,6 +7,7 @@ from os import listdir
 from os.path import isfile, join
 from subprocess import Popen, PIPE
 from shutil import copyfile
+from sklearn.model_selection import train_test_split
 
 debug = 1
 
@@ -292,7 +293,16 @@ for svtool in sv_tools:
             print("Job for NN")
 
 X_preprocessed_vector = preprocess_X(X_vector)
-print(numpy.array(X_preprocessed_vector))
+#print(numpy.array(X_preprocessed_vector))
 
 Y_preprocessed_vector = preprocess_Y(Y_vector)
+#print(numpy.array(Y_preprocessed_vector))
+
+X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.33, random_state=42, shuffle=True)
+nn = MLPRegressor(hidden_layer_sizes=(20, 20), l=1e-2, max_iter=500, random_state=0)
+nn.fit(X_train, y_train)
+
+y_pred = nn.predict(X_test)
+print(y_test-y_pred)
+
 # all files are preprocessed now in unified form
