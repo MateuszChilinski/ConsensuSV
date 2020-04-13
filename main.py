@@ -71,7 +71,8 @@ class SVariant:
             self.ciend2 = ciend2
             self.used = False
     def printVcfLine(self):
-        print(self.chrom, str(self.pos), self.id, self.ref, "<"+self.svtype+">", ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE"+self.svtype+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt, sep='\t')
+        return '\t'.join(self.chrom, str(self.pos), self.id, self.ref, "<"+self.svtype+">",
+                 ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE"+self.svtype+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt, "\n")
     def parse_line(self, line):
         values = line.split("\t")
         self.chrom = values[0]
@@ -340,15 +341,14 @@ for svtool in sv_tools:
             (majorityFound, firstMajor) = findMajority(sv, freqDict, candidates)
             if(majorityFound):
                 newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, -10, 10, -10, 10)
-                newSv.printVcfLine()
                 consensusId += 1
             else:
                 result = loaded_model.predict(preprocess_X([candidates]))
                 pos = result[0]
                 end = result[1]
-                newSv = SVariant("consensus", None, sv.chrom, pos, "consensus_"+str(consensusId), sv.ref, end, sv.gt, pos-end, sv.svtype, -10, 10, -10, 10)
-                newSv.printVcfLine()
+                newSv = SVariant("consensus", None, sv.chrom, round(pos), "consensus_"+str(consensusId), sv.ref, end, sv.gt, pos-end, sv.svtype, -10, 10, -10, 10)
                 consensusId += 1
+            resulting_svs.append(newSv)
             markUsedCandidates(candidates)
 
 if (args.truth is not None): # learning phase
@@ -370,7 +370,11 @@ if (args.truth is not None): # learning phase
 
     filename = 'pretrained.model'
     pickle.dump(nn, open(filename, 'wb'))
-
+else:
+    with open("output.vcf", 'w') as fout:
+        fout.write(header)
+        for sv in resulting_svs:
+            fout.write(sv.printVcfLine())
 #numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_test,y_pred)).T), axis=1), delimiter=',', comments="")
 
 # all files are preprocessed now in unified form
