@@ -166,6 +166,24 @@ def preprocessFiles(folder):
         sv_tools.append(svtool)
     return sv_tools
 
+def buildFreqDict(candidates):
+    freqDict = dict()
+    for candidate in candidates:
+        key = str(candidate.pos)+"-"+str(candidate.end)
+        if key not in freqDict:
+            freqDict[key] = 1
+        else:
+            freqDict[key] += 1
+    return freqDict
+
+def findMajority(sv, freqDict, candidates):
+    majorityFound = False
+    for key in freqDict:
+        if(freqDict[key]/len(candidates) >= 0.7):
+            print(sv.chrom + " " + sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
+            majorityFound = True
+            break
+    return majorityFound
 
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
 parser.add_argument('sv_folder', metavar='sv_folder',
@@ -192,54 +210,10 @@ sv_tools = preprocessFiles(args.sv_folder)
 
 percDiff = 0.1
 
-if (args.truth is not None):
-    for svt in sv_tools:
-        if(svt.tool == "truth"):
-            svtool = svt
-    for sv in svtool.sv_list:
-        candidates = list()
-        candidates.append(sv)
-        for svtool2 in sv_tools:
-            if(svtool.tool == svtool2.tool):
-                continue
-            for sv2 in svtool2.sv_list:
-                if(sv.checkOverlap(sv2)):
-                   candidates.append(sv2)
-        if(len(candidates) < 3): # if fewer than 3 then no point in checking it out
-            continue
-
-        #print(sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
-        
-        freqDict = buildFreqDict(candidates)
-
-        # maybe remove all candidates from svtool once consensus was established based on it?
-        majorityFound = findMajority(sv, freqDict, candidates)
-
-        if(majorityFound):
-            continue
-        print("Job for NN")
-    exit()
-
-def buildFreqDict(candidates):
-    freqDict = dict()
-    for candidate in candidates:
-        key = str(candidate.pos)+"-"+str(candidate.end)
-        if key not in freqDict:
-            freqDict[key] = 1
-        else:
-            freqDict[key] += 1
-    return freqDict
-
-def findMajority(sv, freqDict, candidates):
-    majorityFound = False
-    for key in freqDict:
-        if(freqDict[key]/len(candidates) >= 0.7):
-            print(sv.chrom + " " + sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
-            majorityFound = True
-            break
-    return majorityFound
-
 for svtool in sv_tools:
+    if (args.truth is not None):
+        if(svt.tool != "truth"):
+            continue
     for sv in svtool.sv_list:
         candidates = list()
         candidates.append(sv)
@@ -258,6 +232,8 @@ for svtool in sv_tools:
         majorityFound = findMajority(sv, freqDict, candidates)
         if(majorityFound):
             continue
-
-        print("Job for NN")
+        if (args.truth is not None):
+            print("Job for NN")
+        else:
+            print("Train NN")
 # all files are preprocessed now in unified form
