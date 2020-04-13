@@ -305,7 +305,7 @@ X_preprocessed_vector = preprocess_X(X_vector)
 Y_preprocessed_vector = preprocess_Y(Y_vector)
 #print(numpy.array(Y_preprocessed_vector))
 
-X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.33, random_state=42, shuffle=True)
+X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.33, random_state=44, shuffle=True)
 nn = MLPRegressor(hidden_layer_sizes=(50, 20), solver='lbfgs', max_iter=int(1e8), random_state=0)
 nn.fit(X_train, y_train)
 
