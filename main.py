@@ -309,6 +309,8 @@ nn = MLPRegressor(hidden_layer_sizes=(20, 20), solver='lbfgs', max_iter=int(1e8)
 nn.fit(X_train, y_train)
 
 y_pred = nn.predict(X_test)
+
+numpy.set_printoptions(threshold=sys.maxsize)
 print(y_test-y_pred)
 
 print("Average abs error: " + str(numpy.average(abs(y_test-y_pred))))
