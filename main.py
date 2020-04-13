@@ -193,7 +193,6 @@ def createSVTable():
 
     for file in sv_files:
         toolname = file.split(".")[0]
-        print(toolname)
         if(toolname == "truth"):
             continue
         sv_tools.append(toolname)
@@ -242,9 +241,6 @@ if (args.truth is not None):
 
 sv_tools = preprocessFiles(args.sv_folder)
 
-createSVTable()
-exit()
-
 percDiff = 0.1
 
 X_vector = list()
@@ -255,12 +251,16 @@ for svtool in sv_tools:
         if(svtool.tool != "truth"):
             continue
     for sv in svtool.sv_list:
+        if(sv.chrom != "chr1"):
+            continue
         candidates = list()
         candidates.append(sv)
         for svtool2 in sv_tools:
             if(svtool.tool == svtool2.tool):
                 continue
             for sv2 in svtool2.sv_list:
+                if(sv2.chrom != "chr1"):
+                    continue
                 if(sv.checkOverlap(sv2)):
                    candidates.append(sv2)
                    break
