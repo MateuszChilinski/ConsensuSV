@@ -205,6 +205,7 @@ def preprocess_Y(Y_vector):
     for sv in Y_vector:
         Y_prepr.append(sv.pos)
         Y_prepr.append(sv.end)
+    return Y_prepr
 def preprocess_X(X_vector):
     X_prepr = list()
     sv_all_tools = createSVTable()
@@ -219,6 +220,7 @@ def preprocess_X(X_vector):
                     break
         X_prepr.append(candidatesY_pos)
         X_prepr.append(candidatesY_end)
+    return X_prepr
 
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
 parser.add_argument('sv_folder', metavar='sv_folder',
