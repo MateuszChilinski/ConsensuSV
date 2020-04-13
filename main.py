@@ -172,7 +172,7 @@ parser.add_argument('sv_folder', metavar='sv_folder',
                    help='folder consisting the vcf files')
 parser.add_argument('sample_name', metavar='sample_name',
                    help='name of the sample')
-parser.add_argument('truth', help='used for training new model', required=False)
+parser.add_argument('--truth', help='used for training new model', required=False)
 
 args = parser.parse_args()
 
