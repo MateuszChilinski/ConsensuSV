@@ -236,12 +236,14 @@ print("Preprocessing files...")
 # preprocessing of the files
 # problems with no svlen?
 os.mkdir("temp");
-createSVTable()
-exit()
+
 if (args.truth is not None):
     copyfile(args.truth, "temp/truth.vcf")
 
 sv_tools = preprocessFiles(args.sv_folder)
+
+createSVTable()
+exit()
 
 percDiff = 0.1
 
