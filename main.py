@@ -305,6 +305,7 @@ def markUsedCandidates(candidates):
 if (args.truth is None): # load model
     filename = 'pretrained.model'
     loaded_model = pickle.load(open(filename, 'rb'))
+i = 0
 for svtool in sv_tools:
     if (args.truth is not None):
         if(svtool.tool != "truth"):
@@ -327,9 +328,10 @@ for svtool in sv_tools:
                 if(sv.checkOverlap(sv2)):
                    candidates.append(sv2)
                    break
-        if(len(candidates) < 2): # if fewer than 3 then no point in checking it out
+        if(len(candidates) < 3): # if fewer than 3 then no point in checking it out
             continue
-
+        print(i)
+        i = i+1
         if (args.truth is not None): # learning phase
             candidates.remove(sv)
             X_vector.append(candidates)
