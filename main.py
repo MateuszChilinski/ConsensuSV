@@ -150,7 +150,7 @@ def preprocessFiles(folder):
         cmd = "awk -F " + r"'\t'" + " '{ $4 = ($4 == \"\.\" ? \"N\" : $4) } 1' OFS=" + r"'\t' temp/" + file + " > temp/" + file + "_2"
         execute_command(cmd)
         
-        cmd = "cat " + file + r"_2 | awk '$1 ~ /^#/ {print $0;next} {print $0 | "+ "\"sort -k1,1V -k2,2n\"" + r"}' > " + file
+        cmd = "cat temp/" + file + r"_2 | awk '$1 ~ /^#/ {print $0;next} {print $0 | "+ "\"sort -k1,1V -k2,2n\"" + r"}' > " + file
         execute_command(cmd)
         
         # remove MEI if there are any
