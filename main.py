@@ -305,11 +305,11 @@ X_preprocessed_vector = preprocess_X(X_vector)
 Y_preprocessed_vector = preprocess_Y(Y_vector)
 #print(numpy.array(Y_preprocessed_vector))
 
-X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.33, random_state=42, shuffle=True)
+X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.1, random_state=42, shuffle=True)
 nn = MLPRegressor(hidden_layer_sizes=(49, 14, 7), solver='lbfgs', max_iter=int(1e8), max_fun=30000, random_state=0)
 nn.fit(X_train, y_train)
 
-y_pred = nn.predict(X_train)
+y_pred = nn.predict(X_test)
 
 numpy.set_printoptions(threshold=sys.maxsize)
 #print(y_test)
@@ -317,8 +317,8 @@ numpy.set_printoptions(threshold=sys.maxsize)
 
 #print(y_test-y_pred)
 
-print("Average abs error: " + str(numpy.average(abs(y_train-y_pred))))
+print("Average abs error: " + str(numpy.average(abs(y_test-y_pred))))
 
-numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_train,y_pred)).T), axis=1), delimiter=',', comments="")
+numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_test,y_pred)).T), axis=1), delimiter=',', comments="")
 
 # all files are preprocessed now in unified form
