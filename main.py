@@ -327,7 +327,7 @@ for svtool in sv_tools:
                 if(sv.checkOverlap(sv2)):
                    candidates.append(sv2)
                    break
-        if(len(candidates) < 3): # if fewer than 3 then no point in checking it out
+        if(len(candidates) < 2): # if fewer than 3 then no point in checking it out
             continue
 
         if (args.truth is not None): # learning phase
