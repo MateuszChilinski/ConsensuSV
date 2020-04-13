@@ -276,6 +276,8 @@ for svtool in sv_tools:
             for sv2 in svtool2.sv_list:
                 if(sv.chrom != sv2.chrom): # speeds the process up
                     continue
+                if(sv.pos > sv2.pos+500): # fix later! it should be dependend on ci or % of svlen
+                    break
                 if(sv.checkOverlap(sv2)):
                    candidates.append(sv2)
                    break
