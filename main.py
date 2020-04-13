@@ -228,7 +228,7 @@ def buildFreqDict(candidates):
             freqDict[key] = 1
         else:
             freqDict[key] += 1
-     return freqDict
+    return freqDict
 
 def findMajority(sv, freqDict, candidates):
     for key in freqDict:
