@@ -203,7 +203,8 @@ print("Preprocessing files...")
 # preprocessing of the files
 # problems with no svlen?
 os.mkdir("temp");
-
+createSVTable()
+exit()
 if (args.truth is not None):
     copyfile(args.truth, "temp/truth.vcf")
 
@@ -251,9 +252,11 @@ def createSVTable():
     sv_tools = list()
 
     for file in sv_files:
-        if(file == "temp/truth.vcf"):
+        toolname = file.split("/")[-1]
+        print(toolname)
+        if(toolname == "truth"):
             continue
-        sv_tools.append(file.split("/")[-1])
+        sv_tools.append(toolname)
     return sv_tools.sort()
 
 def preprocess_Y(Y_vector):
