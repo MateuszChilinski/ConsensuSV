@@ -212,7 +212,7 @@ def findMajority(sv, freqDict, candidates):
     winKey = ""
 
     for key in freqDict:
-        if(freqDict[key]/len(candidates) >= 0.6):
+        if(freqDict[key]/len(candidates) >= 0.7):
             print(sv.chrom + " " + sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
             majorityFound = True
             winKey = key
@@ -343,6 +343,7 @@ for svtool in sv_tools:
                 newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, -10, 10, -10, 10)
                 consensusId += 1
             else:
+                #print("1")
                 result = loaded_model.predict(preprocess_X([candidates]))
                 pos = result[0]
                 end = result[1]
