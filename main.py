@@ -346,7 +346,7 @@ for svtool in sv_tools:
                 result = loaded_model.predict(preprocess_X([candidates]))
                 pos = result[0]
                 end = result[1]
-                newSv = SVariant("consensus", None, sv.chrom, round(pos), "consensus_"+str(consensusId), sv.ref, end, sv.gt, pos-end, sv.svtype, -10, 10, -10, 10)
+                newSv = SVariant("consensus", None, sv.chrom, int(round(pos)), "consensus_"+str(consensusId), sv.ref, end, sv.gt, pos-end, sv.svtype, -10, 10, -10, 10)
                 consensusId += 1
             resulting_svs.append(newSv)
             markUsedCandidates(candidates)
