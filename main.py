@@ -284,7 +284,7 @@ for svtool in sv_tools:
             print("Job for NN")
 
 X_preprocessed_vector = preprocess_X(X_vector)
-print(numpy.array(x_preprocessed_vector))
+print(numpy.array(X_preprocessed_vector))
 
 Y_preprocessed_vector = preprocess_Y(Y_vector)
 # all files are preprocessed now in unified form
