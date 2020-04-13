@@ -127,11 +127,53 @@ class SVTool:
                     #sv.print_sv()
                     self.sv_list.append(sv)
 
+def preprocessFiles(folder):
+    reheader_all(folder, "temp/")
+
+    sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
+
+    sv_tools = list()
+
+    for file in sv_files:
+        # awk -F '\t' '{ $4 = ($4 == "\." ? "N" : $4) } 1' OFS='\t' novoBreak.vcf
+
+        cmd = "sed -i '/:ME:/d' temp/" + file
+        execute_command(cmd)
+
+        cmd = "sed -i '/0\/0/d' temp/" + file
+        execute_command(cmd)
+
+        cmd = "awk -F " + r"'\t'" + " '{ $4 = ($4 == \"\.\" ? \"N\" : $4) } 1' OFS=" + r"'\t' temp/" + file + " > temp/" + file + "_2"
+        execute_command(cmd)
+    
+        # remove MEI if there are any
+
+        # ensures there are no . in ref
+        additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
+
+        cmd = r"bcftools query -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(QUAL >= 50 || QUAL = " + "\".\"" + r") && ((SVLEN = " + "\".\"" + r") || (SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50))' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[%GT]\n' -o temp/"+file+" temp/"+file+"_2"    
+        execute_command(cmd)
+
+        #os.replace("temp/"+file+"_2", "temp/"+file)
+        os.remove("temp/"+file+"_2")
+        header = generate_header(args.sample_name)
+        with open("temp/"+file, 'r') as fin:
+            data = fin.read().splitlines(True)
+        with open("temp/"+file, 'w') as fout:
+            fout.write(header)
+            fout.writelines(data[1:])
+        svtool = SVTool("temp/"+file)
+        sv_tools.append(svtool)
+    return sv_tools
+
+
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
 parser.add_argument('sv_folder', metavar='sv_folder',
                    help='folder consisting the vcf files')
 parser.add_argument('sample_name', metavar='sample_name',
                    help='name of the sample')
+parser.add_argument('truth', metavar='truth',
+                   help='used for training new model', required=False)
 
 args = parser.parse_args()
 
@@ -144,47 +186,17 @@ print("Preprocessing files...")
 # problems with no svlen?
 os.mkdir("temp");
 
-reheader_all(args.sv_folder, "temp/")
+if (args.truth is not None):
+    copyfile(args.truth, "temp/truth.vcf")
 
-sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
-
-sv_tools = list()
-
-for file in sv_files:
-    # awk -F '\t' '{ $4 = ($4 == "\." ? "N" : $4) } 1' OFS='\t' novoBreak.vcf
-
-    cmd = "sed -i '/:ME:/d' temp/" + file
-    execute_command(cmd)
-
-    cmd = "sed -i '/0\/0/d' temp/" + file
-    execute_command(cmd)
-
-    cmd = "awk -F " + r"'\t'" + " '{ $4 = ($4 == \"\.\" ? \"N\" : $4) } 1' OFS=" + r"'\t' temp/" + file + " > temp/" + file + "_2"
-    execute_command(cmd)
-    
-    # remove MEI if there are any
-
-    # ensures there are no . in ref
-    additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
-
-    cmd = r"bcftools query -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(QUAL >= 50 || QUAL = " + "\".\"" + r") && ((SVLEN = " + "\".\"" + r") || (SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50))' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[%GT]\n' -o temp/"+file+" temp/"+file+"_2"    
-    execute_command(cmd)
-
-    #os.replace("temp/"+file+"_2", "temp/"+file)
-    os.remove("temp/"+file+"_2")
-    header = generate_header(args.sample_name)
-    with open("temp/"+file, 'r') as fin:
-        data = fin.read().splitlines(True)
-    with open("temp/"+file, 'w') as fout:
-        fout.write(header)
-        fout.writelines(data[1:])
-    svtool = SVTool("temp/"+file)
-    sv_tools.append(svtool)
+sv_tools = preprocessFiles(args.sv_folder)
 
 percDiff = 0.1
 
-
-for svtool in sv_tools:
+if (args.truth is not None):
+    for svt in sv_tools:
+        if(svt.tool == "truth"):
+            svtool = svt
     for sv in svtool.sv_list:
         candidates = list()
         candidates.append(sv)
@@ -199,23 +211,52 @@ for svtool in sv_tools:
 
         #print(sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
         
-        freqDict = dict()
-        for candidate in candidates:
-            key = str(candidate.pos)+"-"+str(candidate.end)
-            if key not in freqDict:
-                freqDict[key] = 1
-            else:
-                freqDict[key] += 1
-            # create unified one
-            #print("\t" + candidate.svtype + " " + str(candidate.pos) + " - " + str(candidate.end))
-            # maybe remove all candidates from svtool once consensus was established based on it?
-        majorityFound = False
-        for key in freqDict:
-            if(freqDict[key]/len(candidates) >= 0.7):
-                print(sv.chrom + " " + sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
-                majorityFound = True
-                break
+        freqDict = buildFreqDict(candidates)
+
+        # maybe remove all candidates from svtool once consensus was established based on it?
+        majorityFound = findMajority(sv, freqDict, candidates)
+
         if(majorityFound):
             continue
+        print("Job for NN")
+    exit()
+
+def buildFreqDict(candidates):
+    freqDict = dict()
+    for candidate in candidates:
+        key = str(candidate.pos)+"-"+str(candidate.end)
+        if key not in freqDict:
+            freqDict[key] = 1
+        else:
+            freqDict[key] += 1
+
+def findMajority(sv, freqDict, candidates):
+    for key in freqDict:
+        if(freqDict[key]/len(candidates) >= 0.7):
+            print(sv.chrom + " " + sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
+            majorityFound = True
+            break
+    return majorityFound
+
+for svtool in sv_tools:
+    for sv in svtool.sv_list:
+        candidates = list()
+        candidates.append(sv)
+        for svtool2 in sv_tools:
+            if(svtool.tool == svtool2.tool):
+                continue
+            for sv2 in svtool2.sv_list:
+                if(sv.checkOverlap(sv2)):
+                   candidates.append(sv2)
+        if(len(candidates) < 3): # if fewer than 3 then no point in checking it out
+            continue
+
+        freqDict = buildFreqDict(candidates)
+
+        # maybe remove all candidates from svtool once consensus was established based on it?
+        majorityFound = findMajority(sv, freqDict, candidates)
+        if(majorityFound):
+            continue
+
         print("Job for NN")
 # all files are preprocessed now in unified form
