@@ -221,7 +221,7 @@ def preprocess_X(X_vector):
                     found = True
                     break
             if(found):
-                break
+                continue
             candidatesY_pos.append(0) # tool not present
             candidatesY_end.append(0)
         X_prepr.append(candidatesY_pos)
