@@ -47,7 +47,8 @@ def reheader_all(dirFrom, dirTo):
     os.remove("header_temp")
 
 class SVariant:
-    def __init__(self, line):
+    def __init__(self, line, tool):
+        self.tool = tool
         self.parse_line(line)
     def parse_line(self, line):
         values = line.split("\t")
@@ -120,7 +121,7 @@ class SVTool:
         with open(filename) as file:
             for line in file:
                 if not(line.startswith('#')):
-                    sv = SVariant(line)
+                    sv = SVariant(line, self.tool)
                     if(abs(sv.ciend2-sv.ciend1) > self.max_conf or abs(sv.cipos2-sv.cipos1) > self.max_conf):
                         continue
                     #print(self.tool + " | ", end = '')
@@ -210,6 +211,9 @@ sv_tools = preprocessFiles(args.sv_folder)
 
 percDiff = 0.1
 
+X_vector = list()
+Y_vector = list()
+
 for svtool in sv_tools:
     if (args.truth is not None):
         if(svtool.tool != "truth"):
@@ -223,6 +227,7 @@ for svtool in sv_tools:
             for sv2 in svtool2.sv_list:
                 if(sv.checkOverlap(sv2)):
                    candidates.append(sv2)
+                   break
         if(len(candidates) < 3): # if fewer than 3 then no point in checking it out
             continue
 
@@ -233,7 +238,45 @@ for svtool in sv_tools:
         if(majorityFound):
             continue
         if (args.truth is not None):
-            print("Train NN")
+            #print("Train NN")
+            candidates.remove(sv)
+            X_vector.append(candidates)
+            Y_vector.append(sv)
         else:
             print("Job for NN")
+
+def createSVTable():
+    sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
+
+    sv_tools = list()
+
+    for file in sv_files:
+        if(file == "temp/truth.vcf"):
+            continue
+        sv_tools.append(file.split("/")[-1])
+    return sv_tools.sort()
+
+def preprocess_Y(Y_vector):
+    Y_prepr = list()
+    for sv in Y_vector:
+        Y_prepr.append(sv.pos)
+        Y_prepr.append(sv.end)
+def preprocess_X(X_vector):
+    X_prepr = list()
+    sv_all_tools = createSVTable()
+    for candidates in X_vector:
+        candidatesY_pos = list()
+        candidatesY_end = list()
+        for tool in sv_all_tools:
+            for sv in candidates:
+                if(tool.tool == sv.tool):
+                    candidatesY_pos.append(sv.pos)
+                    candidatesY_end.append(sv.end)
+                    break
+        X_prepr.append(candidatesY_pos)
+        X_prepr.append(candidatesY_end)
+        
+
+X_preprocessed_vector = preprocess_X(X_vector)
+Y_preprocessed_vector = preprocess_Y(Y_vector)
 # all files are preprocessed now in unified form
