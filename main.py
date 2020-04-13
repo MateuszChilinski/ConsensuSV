@@ -149,17 +149,20 @@ def preprocessFiles(folder):
 
         cmd = "awk -F " + r"'\t'" + " '{ $4 = ($4 == \"\.\" ? \"N\" : $4) } 1' OFS=" + r"'\t' temp/" + file + " > temp/" + file + "_2"
         execute_command(cmd)
-    
+        
+        cmd = "cat " + file + r"_2 | awk '$1 ~ /^#/ {print $0;next} {print $0 | \"sort -k1,1V -k2,2n\"}' > " + file
+        execute_command(cmd)
+        
         # remove MEI if there are any
 
         # ensures there are no . in ref
         additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
 
-        cmd = r"bcftools query -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(QUAL >= 50 || QUAL = " + "\".\"" + r") && ((SVLEN = " + "\".\"" + r") || (SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50))' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[%GT]\n' -o temp/"+file+" temp/"+file+"_2"    
+        cmd = r"bcftools query -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(QUAL >= 50 || QUAL = " + "\".\"" + r") && ((SVLEN = " + "\".\"" + r") || (SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50))' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[%GT]\n' -o temp/"+file+"_2 temp/"+file    
         execute_command(cmd)
 
         #os.replace("temp/"+file+"_2", "temp/"+file)
-        os.remove("temp/"+file+"_2")
+        os.replace("temp/"+file+"_2", "temp/"+file)
         header = generate_header(args.sample_name)
         with open("temp/"+file, 'r') as fin:
             data = fin.read().splitlines(True)
@@ -271,6 +274,8 @@ for svtool in sv_tools:
             if(svtool.tool == svtool2.tool):
                 continue
             for sv2 in svtool2.sv_list:
+                if(sv.chrom != sv2.chrom): # speeds the process up
+                    continue
                 if(sv.checkOverlap(sv2)):
                    candidates.append(sv2)
                    break
