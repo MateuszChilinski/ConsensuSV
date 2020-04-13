@@ -54,7 +54,7 @@ def reheader_all(dirFrom, dirTo):
 class SVariant:
     def __init__(self, tool, line=None, chrom=None, pos=None, id=None, ref=None, end=None, gt=None, svlen=None, svtype=None, cipos1=None, cipos2=None, ciend1=None, ciend2=None):
         self.tool = tool
-        if(line is not NullType):
+        if(line is not None):
             self.parse_line(line)
         else:
             self.chrom = chrom
