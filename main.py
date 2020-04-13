@@ -70,7 +70,7 @@ class SVariant:
             self.ciend1 = ciend1
             self.ciend2 = ciend2
     def printVcfLine(self):
-        print(self.chrom, self.pos, self.id, self.ref, "<"+self.svtype+">", ".", "PASS", "END="+self.end+";SVLEN="+self.svlen+";SVTYPE"+self.svtype+";CIPOS="+self.cipos1+","+self.cipos2+";CIEND="+self.ciend1+","+self.ciend2, "GT", self.gt, sep='\t')
+        print(self.chrom, str(self.pos), self.id, self.ref, "<"+self.svtype+">", ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE"+self.svtype+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt, sep='\t')
     def parse_line(self, line):
         values = line.split("\t")
         self.chrom = values[0]
