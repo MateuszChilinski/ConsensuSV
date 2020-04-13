@@ -213,15 +213,17 @@ def preprocess_X(X_vector):
         candidatesY_pos = list()
         candidatesY_end = list()
         for tool in sv_all_tools:
+            found = False
             for sv in candidates:
                 if(tool == sv.tool):
-                    print(tool)
                     candidatesY_pos.append(sv.pos)
                     candidatesY_end.append(sv.end)
+                    found = True
                     break
+            if(found):
+                break
             candidatesY_pos.append(0) # tool not present
             candidatesY_end.append(0)
-        print("")
         X_prepr.append(candidatesY_pos)
         X_prepr.append(candidatesY_end)
     return X_prepr
