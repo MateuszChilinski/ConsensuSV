@@ -160,7 +160,7 @@ def preprocessFiles(folder):
     sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
 
     sv_tools = list()
-
+    header = generate_header(args.sample_name)
     for file in sv_files:
         # awk -F '\t' '{ $4 = ($4 == "\." ? "N" : $4) } 1' OFS='\t' novoBreak.vcf
 
@@ -186,7 +186,7 @@ def preprocessFiles(folder):
 
         #os.replace("temp/"+file+"_2", "temp/"+file)
         os.replace("temp/"+file+"_2", "temp/"+file)
-        header = generate_header(args.sample_name)
+        
         with open("temp/"+file, 'r') as fin:
             data = fin.read().splitlines(True)
         with open("temp/"+file, 'w') as fout:
@@ -371,6 +371,7 @@ if (args.truth is not None): # learning phase
     filename = 'pretrained.model'
     pickle.dump(nn, open(filename, 'wb'))
 else:
+    header = generate_header(args.sample_name)
     with open("output.vcf", 'w') as fout:
         fout.write(header)
         for sv in resulting_svs:
