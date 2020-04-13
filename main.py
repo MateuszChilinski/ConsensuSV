@@ -3,6 +3,7 @@ import shlex
 import os
 import numpy
 import sys
+import pickle
 
 from os import listdir
 from os.path import isfile, join
@@ -51,16 +52,33 @@ def reheader_all(dirFrom, dirTo):
     os.remove("header_temp")
 
 class SVariant:
-    def __init__(self, line, tool):
+    def __init__(self, tool, line=None, chrom=None, pos=None, id=None, ref=None, end=None, gt=None, svlen=None, svtype=None, cipos1=None, cipos2=None, ciend1=None, ciend2=None):
         self.tool = tool
-        self.parse_line(line)
+        if(line is not NullType):
+            self.parse_line(line)
+        else:
+            self.chrom = chrom
+            self.pos = pos
+            self.end = end
+            self.gt = gt
+            self.id = id
+            self.ref = ref
+            self.svlen = svlen
+            self.svtype = svtype
+            self.cipos1 = cipos1
+            self.cipos2 = cipos2
+            self.ciend1 = ciend1
+            self.ciend2 = ciend2
+    def printVcfLine(self):
+        print(self.chrom, self.pos, self.id, self.ref, "<"+self.svtype+">", ".", "PASS", "END="+self.end+";SVLEN="+self.svlen+";SVTYPE"+self.svtype+";CIPOS="+self.cipos1+","+self.cipos2+";CIEND="+self.ciend1+","+self.ciend2, "GT", self.gt, sep='\t')
     def parse_line(self, line):
         values = line.split("\t")
         self.chrom = values[0]
         self.pos = int(values[1])
         info = values[7].split(";")
         self.gt = values[9]
-
+        self.ref = values[3]
+        
         self.end = int(info[0].split("=")[1])
         self.svlen = info[1].split("=")[1]
 
@@ -125,7 +143,7 @@ class SVTool:
         with open(filename) as file:
             for line in file:
                 if not(line.startswith('#')):
-                    sv = SVariant(line, self.tool)
+                    sv = SVariant(self.tool, line)
                     if(abs(sv.ciend2-sv.ciend1) > self.max_conf or abs(sv.cipos2-sv.cipos1) > self.max_conf):
                         continue
                     #print(self.tool + " | ", end = '')
@@ -186,12 +204,22 @@ def buildFreqDict(candidates):
 
 def findMajority(sv, freqDict, candidates):
     majorityFound = False
+    firstCandidate = None
+    winKey = ""
+
     for key in freqDict:
         if(freqDict[key]/len(candidates) >= 0.7):
             print(sv.chrom + " " + sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
             majorityFound = True
+            winKey = key
             break
-    return majorityFound
+    if(majorityFound):
+        for candidate in candidates:
+            key = str(candidate.pos)+"-"+str(candidate.end)
+            if(key == winKey):
+                firstCandidate = candidate
+                break
+    return (majorityFound, firstCandidate)
 
 def createSVTable():
     sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
@@ -262,6 +290,9 @@ percDiff = 0.1
 X_vector = list()
 Y_vector = list()
 
+resulting_svs = list()
+
+consensusId = 1
 for svtool in sv_tools:
     if (args.truth is not None):
         if(svtool.tool != "truth"):
@@ -288,16 +319,19 @@ for svtool in sv_tools:
         freqDict = buildFreqDict(candidates)
 
         # maybe remove all candidates from svtool once consensus was established based on it?
-        majorityFound = findMajority(sv, freqDict, candidates)
+        (majorityFound, firstMajor) = findMajority(sv, freqDict, candidates)
         if(majorityFound):
-            continue
-        if (args.truth is not None):
-            #print("Train NN")
-            candidates.remove(sv)
-            X_vector.append(candidates)
-            Y_vector.append(sv)
+            newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+consensusId, firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, -10, 10, -10, 10)
+            consensusId += 1
         else:
-            print("Job for NN")
+            if (args.truth is not None):
+                candidates.remove(sv)
+                X_vector.append(candidates)
+                Y_vector.append(sv)
+            else:
+                print("Job for NN")
+                #newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+consensusId, firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, -10, 10, -10, 10)
+                consensusId += 1
 
 X_preprocessed_vector = preprocess_X(X_vector)
 #print(numpy.array(X_preprocessed_vector))
@@ -305,19 +339,15 @@ X_preprocessed_vector = preprocess_X(X_vector)
 Y_preprocessed_vector = preprocess_Y(Y_vector)
 #print(numpy.array(Y_preprocessed_vector))
 
-X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.1, random_state=42, shuffle=True)
+X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.33, random_state=42, shuffle=True)
 nn = MLPRegressor(hidden_layer_sizes=(49, 14, 7), solver='lbfgs', max_iter=int(1e8), max_fun=30000, random_state=0)
 nn.fit(X_train, y_train)
 
 y_pred = nn.predict(X_test)
 
-numpy.set_printoptions(threshold=sys.maxsize)
-#print(y_test)
-#print(y_pred)
-
-#print(y_test-y_pred)
 error = abs(y_test-y_pred)
-print("Average abs error (testing set of 10%): " + str(numpy.average(error)) + "std: " + str(numpy.std(error)))
+
+print("Average abs error (testing set of 10%): " + str(numpy.average(error)) + " Std: " + str(numpy.std(error)))
 
 #numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_test,y_pred)).T), axis=1), delimiter=',', comments="")
 
