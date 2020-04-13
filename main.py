@@ -193,12 +193,11 @@ def createSVTable():
 
     for file in sv_files:
         toolname = file.split(".")[0]
-        print(toolname)
         if(toolname == "truth"):
             continue
-        print(toolname)
         sv_tools.append(toolname)
-    return sv_tools.sort()
+    sv_tools.sort()
+    return sv_tools
 
 def preprocess_Y(Y_vector):
     Y_prepr = list()
@@ -208,7 +207,6 @@ def preprocess_Y(Y_vector):
 def preprocess_X(X_vector):
     X_prepr = list()
     sv_all_tools = createSVTable()
-    print(' '.join(sv_all_tools))
     for candidates in X_vector:
         candidatesY_pos = list()
         candidatesY_end = list()
