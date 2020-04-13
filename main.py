@@ -308,7 +308,9 @@ X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_pre
 nn = MLPRegressor(hidden_layer_sizes=(20, 20), solver='lbfgs', max_iter=int(1e8), random_state=0)
 nn.fit(X_train, y_train)
 
-y_pred = nn.predict(X_train)
-print(y_train-y_pred)
+y_pred = nn.predict(X_test)
+print(y_test-y_pred)
+
+print("Average abs error: " + str(numpy.average(abs(y_test-y_pred))))
 
 # all files are preprocessed now in unified form
