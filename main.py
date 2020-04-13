@@ -300,7 +300,7 @@ Y_preprocessed_vector = preprocess_Y(Y_vector)
 #print(numpy.array(Y_preprocessed_vector))
 
 X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.33, random_state=42, shuffle=True)
-nn = MLPRegressor(hidden_layer_sizes=(20, 20), max_iter=500, random_state=0)
+nn = MLPRegressor(hidden_layer_sizes=(20, 20), max_iter=1e6, random_state=0)
 nn.fit(X_train, y_train)
 
 y_pred = nn.predict(X_test)
