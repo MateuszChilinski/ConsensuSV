@@ -8,6 +8,7 @@ from os.path import isfile, join
 from subprocess import Popen, PIPE
 from shutil import copyfile
 from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPRegressor
 
 debug = 1
 
