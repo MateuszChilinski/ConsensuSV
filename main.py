@@ -312,8 +312,11 @@ nn.fit(X_train, y_train)
 y_pred = nn.predict(X_test)
 
 numpy.set_printoptions(threshold=sys.maxsize)
+print(y_test)
+print(y_pred)
+
 print(y_test-y_pred)
 
-print("Average abs error: " + str(numpy.average(abs(y_test-y_pred))))
+print("Average abs error: " + str(avg(abs(y_test-y_pred))))
 
 # all files are preprocessed now in unified form
