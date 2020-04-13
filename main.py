@@ -221,7 +221,7 @@ def preprocess_X(X_vector):
                     break
             candidatesY_pos.append(0) # tool not present
             candidatesY_end.append(0)
-
+        print("")
         X_prepr.append(candidatesY_pos)
         X_prepr.append(candidatesY_end)
     return X_prepr
