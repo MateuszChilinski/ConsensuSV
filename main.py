@@ -317,7 +317,7 @@ numpy.set_printoptions(threshold=sys.maxsize)
 
 #print(y_test-y_pred)
 error = abs(y_test-y_pred)
-print("Average abs error (testing set of 10%): " + str(numpy.average(error)) + "std: " + str(numpy.std(error))
+print("Average abs error (testing set of 10%): " + str(numpy.average(error)) + "std: " + str(numpy.std(error)))
 
 #numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_test,y_pred)).T), axis=1), delimiter=',', comments="")
 
