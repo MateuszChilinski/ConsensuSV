@@ -263,16 +263,16 @@ for svtool in sv_tools:
         if(svtool.tool != "truth"):
             continue
     for sv in svtool.sv_list:
-        if(sv.chrom != "chr1"):
-            continue
+        #if(sv.chrom != "chr1"):
+        #    continue
         candidates = list()
         candidates.append(sv)
         for svtool2 in sv_tools:
             if(svtool.tool == svtool2.tool):
                 continue
             for sv2 in svtool2.sv_list:
-                if(sv2.chrom != "chr1"):
-                    continue
+                #if(sv2.chrom != "chr1"):
+                #    continue
                 if(sv.checkOverlap(sv2)):
                    candidates.append(sv2)
                    break
@@ -300,7 +300,7 @@ Y_preprocessed_vector = preprocess_Y(Y_vector)
 #print(numpy.array(Y_preprocessed_vector))
 
 X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.33, random_state=42, shuffle=True)
-nn = MLPRegressor(hidden_layer_sizes=(20, 20), max_iter=int(1e6), random_state=0)
+nn = MLPRegressor(hidden_layer_sizes=(20, 20), max_iter=int(1e8), random_state=0)
 nn.fit(X_train, y_train)
 
 y_pred = nn.predict(X_train)
