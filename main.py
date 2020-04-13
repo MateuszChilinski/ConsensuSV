@@ -1,6 +1,7 @@
 import argparse
 import shlex
 import os
+import numpy
 
 from os import listdir
 from os.path import isfile, join
@@ -212,7 +213,7 @@ def preprocess_X(X_vector):
         candidatesY_end = list()
         for tool in sv_all_tools:
             for sv in candidates:
-                if(tool.tool == sv.tool):
+                if(tool == sv.tool):
                     candidatesY_pos.append(sv.pos)
                     candidatesY_end.append(sv.end)
                     break
@@ -282,9 +283,8 @@ for svtool in sv_tools:
         else:
             print("Job for NN")
 
-
-        
-
 X_preprocessed_vector = preprocess_X(X_vector)
+print(numpy.array(x_preprocessed_vector))
+
 Y_preprocessed_vector = preprocess_Y(Y_vector)
 # all files are preprocessed now in unified form
