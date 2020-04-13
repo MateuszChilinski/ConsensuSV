@@ -348,11 +348,14 @@ if (args.truth is not None): # learning phase
 
     X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.33, random_state=42, shuffle=True)
     nn = MLPRegressor(hidden_layer_sizes=(49, 14, 7), solver='lbfgs', max_iter=int(1e8), max_fun=30000, random_state=0)
+
+    print("Creating the model...")
+
     nn.fit(X_train, y_train)
 
     nn_score = nn.score(X_test, y_test)
 
-    print("nn score " + str(nn_score))
+    print("Score of model: " + str(nn_score))
     filename = 'pretrained.model'
     pickle.dump(nn, open(filename, 'wb'))
 
