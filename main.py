@@ -72,7 +72,7 @@ class SVariant:
             self.used = False
     def printVcfLine(self):
         return '\t'.join((self.chrom, str(self.pos), self.id, self.ref, "<"+self.svtype+">",
-                 ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE"+self.svtype+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt, "\n"))
+                 ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE"+self.svtype+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt))
     def parse_line(self, line):
         values = line.split("\t")
         self.chrom = values[0]
@@ -310,7 +310,7 @@ for svtool in sv_tools:
         if(svtool.tool != "truth"):
             continue
     for sv in svtool.sv_list:
-        #if(sv.used): continue
+        if(sv.used): continue
         #if(sv.chrom != "chr1"):
         #    continue
         candidates = list()
@@ -319,7 +319,7 @@ for svtool in sv_tools:
             if(svtool.tool == svtool2.tool):
                 continue
             for sv2 in svtool2.sv_list:
-                #if(sv2.used): continue
+                if(sv2.used): continue
                 if(sv.chrom != sv2.chrom): # speeds the process up
                     continue
                 if(sv2.pos > sv.pos+500): # fix later! it should be dependend on ci or % of svlen
