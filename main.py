@@ -213,6 +213,7 @@ def preprocess_X(X_vector):
         candidatesY_pos = list()
         candidatesY_end = list()
         for tool in sv_all_tools:
+            print(tool)
             for sv in candidates:
                 if(tool == sv.tool):
                     candidatesY_pos.append(sv.pos)
