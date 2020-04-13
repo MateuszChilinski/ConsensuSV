@@ -212,7 +212,7 @@ percDiff = 0.1
 
 for svtool in sv_tools:
     if (args.truth is not None):
-        if(svt.tool != "truth"):
+        if(svtool.tool != "truth"):
             continue
     for sv in svtool.sv_list:
         candidates = list()
