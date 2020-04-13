@@ -330,8 +330,6 @@ for svtool in sv_tools:
                    break
         if(len(candidates) < 3): # if fewer than 3 then no point in checking it out
             continue
-        print(i)
-        i = i+1
         if (args.truth is not None): # learning phase
             candidates.remove(sv)
             X_vector.append(candidates)
