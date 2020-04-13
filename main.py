@@ -333,13 +333,13 @@ for svtool in sv_tools:
             (majorityFound, firstMajor) = findMajority(sv, freqDict, candidates)
             if(majorityFound):
                 newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, -10, 10, -10, 10)
+                newSv.printVcfLine()
                 consensusId += 1
             else:
-                print("Job for NN")
                 result = loaded_model.predict(preprocess_X([candidates]))
                 pos = result[0]
                 end = result[1]
-                #newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+consensusId, firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, -10, 10, -10, 10)
+                newSv = SVariant("consensus", None, sv.chrom, pos, "consensus_"+consensusId, sv.ref, end, sv.gt, pos-end, sv.svtype, -10, 10, -10, 10)
                 consensusId += 1
 
 if (args.truth is not None): # learning phase
@@ -356,6 +356,9 @@ if (args.truth is not None): # learning phase
     nn_score = nn.score(X_test, y_test)
 
     print("Score of model: " + str(nn_score))
+    error = abs(y_test-y_pred)
+    print("Average abs error (testing set of 10%): " + str(numpy.average(error)) + "std: " + str(numpy.std(error)))
+
     filename = 'pretrained.model'
     pickle.dump(nn, open(filename, 'wb'))
 
