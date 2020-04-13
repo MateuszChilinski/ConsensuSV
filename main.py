@@ -212,7 +212,7 @@ def findMajority(sv, freqDict, candidates):
     winKey = ""
 
     for key in freqDict:
-        if(freqDict[key]/len(candidates) >= 0.7):
+        if(freqDict[key]/len(candidates) >= 0.6):
             print(sv.chrom + " " + sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
             majorityFound = True
             winKey = key
