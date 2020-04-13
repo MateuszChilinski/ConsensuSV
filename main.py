@@ -233,7 +233,7 @@ for svtool in sv_tools:
         if(majorityFound):
             continue
         if (args.truth is not None):
-            print("Job for NN")
-        else:
             print("Train NN")
+        else:
+            print("Job for NN")
 # all files are preprocessed now in unified form
