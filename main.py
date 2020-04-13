@@ -72,7 +72,7 @@ class SVariant:
             self.used = False
     def printVcfLine(self):
         return '\t'.join((self.chrom, str(self.pos), self.id, self.ref, "<"+self.svtype+">",
-                 ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE"+self.svtype+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt))
+                 ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE="+self.svtype+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt))
     def parse_line(self, line):
         values = line.split("\t")
         self.chrom = values[0]
@@ -132,8 +132,8 @@ class SVariant:
         maxEnd1 = self.end+self.ciend2
         minEnd2 = sv2.end+self.ciend1
         maxEnd2 = sv2.end+self.ciend2
-        if(max(minPos1, minPos2) <= min(maxPos1, maxPos2)):
-            if(max(minEnd1, minEnd2) <= min(maxEnd1, maxEnd2)):
+        if(max(minPos1, minPos2)-100 <= min(maxPos1, maxPos2)):
+            if(max(minEnd1, minEnd2)-100 <= min(maxEnd1, maxEnd2)):
                 return True
         return False
 
