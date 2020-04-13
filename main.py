@@ -363,7 +363,9 @@ if (args.truth is not None): # learning phase
 
     nn.fit(X_train, y_train)
 
+
     nn_score = nn.score(X_test, y_test)
+    y_pred = nn.predict(X_test)
 
     print("Score of model: " + str(nn_score))
     error = abs(y_test-y_pred)
