@@ -193,8 +193,10 @@ def createSVTable():
 
     for file in sv_files:
         toolname = file.split(".")[0]
+        print(toolname)
         if(toolname == "truth"):
             continue
+        print(toolname)
         sv_tools.append(toolname)
     return sv_tools.sort()
 
