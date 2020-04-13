@@ -231,6 +231,7 @@ def buildFreqDict(candidates):
     return freqDict
 
 def findMajority(sv, freqDict, candidates):
+    majorityFound = False
     for key in freqDict:
         if(freqDict[key]/len(candidates) >= 0.7):
             print(sv.chrom + " " + sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
