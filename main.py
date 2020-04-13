@@ -206,6 +206,7 @@ def preprocess_Y(Y_vector):
 def preprocess_X(X_vector):
     X_prepr = list()
     sv_all_tools = createSVTable()
+    print(' '.join(sv_all_tools))
     for candidates in X_vector:
         candidatesY_pos = list()
         candidatesY_end = list()
