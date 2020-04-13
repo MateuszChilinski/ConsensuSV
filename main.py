@@ -69,6 +69,7 @@ class SVariant:
             self.cipos2 = cipos2
             self.ciend1 = ciend1
             self.ciend2 = ciend2
+            self.used = False
     def printVcfLine(self):
         print(self.chrom, str(self.pos), self.id, self.ref, "<"+self.svtype+">", ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE"+self.svtype+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt, sep='\t')
     def parse_line(self, line):
@@ -103,6 +104,8 @@ class SVariant:
 
         self.ciend1 = int(ciend[0])
         self.ciend2 = int(ciend[1])
+
+        self.used = False
     def parse_type(self, type):
         if "del" in type.casefold():
             return "DEL"
@@ -294,6 +297,10 @@ resulting_svs = list()
 
 consensusId = 1
 
+def markUsedCandidates(candidates):
+    for candidate in candidates:
+        candidate.used = True
+
 if (args.truth is None): # load model
     filename = 'pretrained.model'
     loaded_model = pickle.load(open(filename, 'rb'))
@@ -302,6 +309,7 @@ for svtool in sv_tools:
         if(svtool.tool != "truth"):
             continue
     for sv in svtool.sv_list:
+        if(sv.used): continue
         #if(sv.chrom != "chr1"):
         #    continue
         candidates = list()
@@ -310,6 +318,7 @@ for svtool in sv_tools:
             if(svtool.tool == svtool2.tool):
                 continue
             for sv2 in svtool2.sv_list:
+                if(sv2.used): continue
                 if(sv.chrom != sv2.chrom): # speeds the process up
                     continue
                 if(sv2.pos > sv.pos+500): # fix later! it should be dependend on ci or % of svlen
@@ -320,8 +329,6 @@ for svtool in sv_tools:
         if(len(candidates) < 3): # if fewer than 3 then no point in checking it out
             continue
 
-
-        
         if (args.truth is not None): # learning phase
             candidates.remove(sv)
             X_vector.append(candidates)
@@ -340,7 +347,9 @@ for svtool in sv_tools:
                 pos = result[0]
                 end = result[1]
                 newSv = SVariant("consensus", None, sv.chrom, pos, "consensus_"+str(consensusId), sv.ref, end, sv.gt, pos-end, sv.svtype, -10, 10, -10, 10)
+                newSv.printVcfLine()
                 consensusId += 1
+            markUsedCandidates(candidates)
 
 if (args.truth is not None): # learning phase
     X_preprocessed_vector = preprocess_X(X_vector)
