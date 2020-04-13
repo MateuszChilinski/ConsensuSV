@@ -19,6 +19,7 @@ with open('charles_pass2', 'r') as f:
                 caller_parsed = caller.split(',')[0].split(':')[1]
                 if(caller_parsed in callers_list or caller_parsed not in our_callers): continue
                 callersp += caller_parsed + ","
+                callers_list.add(caller_parsed)
             callersp = callersp[0:-1]
             callers_no = callersp.count(',')+1
             if(callers_no >= 3):
