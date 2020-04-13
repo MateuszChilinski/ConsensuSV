@@ -379,6 +379,9 @@ else:
         fout.write(header)
         for sv in resulting_svs:
             fout.write(sv.printVcfLine())
+
+    cmd = "cat output.vcf | awk '$1 ~ /^#/ {print $0;next} {print $0 | "+ "\"sort -k1,1V -k2,2n\"" + r"}' > output_sorted.vcf"
+    execute_command(cmd)
 #numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_test,y_pred)).T), axis=1), delimiter=',', comments="")
 
 # all files are preprocessed now in unified form
