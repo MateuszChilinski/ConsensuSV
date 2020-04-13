@@ -293,6 +293,10 @@ Y_vector = list()
 resulting_svs = list()
 
 consensusId = 1
+
+if (args.truth is None): # load model
+    filename = 'pretrained.model'
+    loaded_model = pickle.load(open(filename, 'rb'))
 for svtool in sv_tools:
     if (args.truth is not None):
         if(svtool.tool != "truth"):
@@ -316,40 +320,41 @@ for svtool in sv_tools:
         if(len(candidates) < 3): # if fewer than 3 then no point in checking it out
             continue
 
-        freqDict = buildFreqDict(candidates)
-
-        # maybe remove all candidates from svtool once consensus was established based on it?
-        (majorityFound, firstMajor) = findMajority(sv, freqDict, candidates)
 
         
-        if (args.truth is not None):
+        if (args.truth is not None): # learning phase
             candidates.remove(sv)
             X_vector.append(candidates)
             Y_vector.append(sv)
-
-        if(majorityFound):
-            newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, -10, 10, -10, 10)
-            consensusId += 1
         else:
-            print("Job for NN")
+            freqDict = buildFreqDict(candidates)
+
+            # maybe remove all candidates from svtool once consensus was established based on it?
+            (majorityFound, firstMajor) = findMajority(sv, freqDict, candidates)
+            if(majorityFound):
+                newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, -10, 10, -10, 10)
+                consensusId += 1
+            else:
+                print("Job for NN")
+                result = loaded_model.predict(preprocess_X([candidates]))
+                pos = result[0]
+                end = result[1]
                 #newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+consensusId, firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, -10, 10, -10, 10)
-            consensusId += 1
+                consensusId += 1
 
-X_preprocessed_vector = preprocess_X(X_vector)
-#print(numpy.array(X_preprocessed_vector))
+if (args.truth is not None): # learning phase
+    X_preprocessed_vector = preprocess_X(X_vector)
+    Y_preprocessed_vector = preprocess_Y(Y_vector)
 
-Y_preprocessed_vector = preprocess_Y(Y_vector)
-#print(numpy.array(Y_preprocessed_vector))
+    X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.33, random_state=42, shuffle=True)
+    nn = MLPRegressor(hidden_layer_sizes=(49, 14, 7), solver='lbfgs', max_iter=int(1e8), max_fun=30000, random_state=0)
+    nn.fit(X_train, y_train)
 
-X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.33, random_state=42, shuffle=True)
-nn = MLPRegressor(hidden_layer_sizes=(49, 14, 7), solver='lbfgs', max_iter=int(1e8), max_fun=30000, random_state=0)
-nn.fit(X_train, y_train)
+    nn_score = nn.score(X_test, y_test)
 
-y_pred = nn.predict(X_test)
-
-error = abs(y_test-y_pred)
-
-print("Average abs error (testing set of 10%): " + str(numpy.average(error)) + " Std: " + str(numpy.std(error)))
+    print("nn score " + str(nn_score))
+    filename = 'pretrained.model'
+    pickle.dump(nn, open(filename, 'wb'))
 
 #numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_test,y_pred)).T), axis=1), delimiter=',', comments="")
 
