@@ -186,6 +186,39 @@ def findMajority(sv, freqDict, candidates):
             break
     return majorityFound
 
+def createSVTable():
+    sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
+
+    sv_tools = list()
+
+    for file in sv_files:
+        toolname = file.split("/")[-1]
+        print(toolname)
+        if(toolname == "truth"):
+            continue
+        sv_tools.append(toolname)
+    return sv_tools.sort()
+
+def preprocess_Y(Y_vector):
+    Y_prepr = list()
+    for sv in Y_vector:
+        Y_prepr.append(sv.pos)
+        Y_prepr.append(sv.end)
+def preprocess_X(X_vector):
+    X_prepr = list()
+    sv_all_tools = createSVTable()
+    for candidates in X_vector:
+        candidatesY_pos = list()
+        candidatesY_end = list()
+        for tool in sv_all_tools:
+            for sv in candidates:
+                if(tool.tool == sv.tool):
+                    candidatesY_pos.append(sv.pos)
+                    candidatesY_end.append(sv.end)
+                    break
+        X_prepr.append(candidatesY_pos)
+        X_prepr.append(candidatesY_end)
+
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
 parser.add_argument('sv_folder', metavar='sv_folder',
                    help='folder consisting the vcf files')
@@ -246,38 +279,7 @@ for svtool in sv_tools:
         else:
             print("Job for NN")
 
-def createSVTable():
-    sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
 
-    sv_tools = list()
-
-    for file in sv_files:
-        toolname = file.split("/")[-1]
-        print(toolname)
-        if(toolname == "truth"):
-            continue
-        sv_tools.append(toolname)
-    return sv_tools.sort()
-
-def preprocess_Y(Y_vector):
-    Y_prepr = list()
-    for sv in Y_vector:
-        Y_prepr.append(sv.pos)
-        Y_prepr.append(sv.end)
-def preprocess_X(X_vector):
-    X_prepr = list()
-    sv_all_tools = createSVTable()
-    for candidates in X_vector:
-        candidatesY_pos = list()
-        candidatesY_end = list()
-        for tool in sv_all_tools:
-            for sv in candidates:
-                if(tool.tool == sv.tool):
-                    candidatesY_pos.append(sv.pos)
-                    candidatesY_end.append(sv.end)
-                    break
-        X_prepr.append(candidatesY_pos)
-        X_prepr.append(candidatesY_end)
         
 
 X_preprocessed_vector = preprocess_X(X_vector)
