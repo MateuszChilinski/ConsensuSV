@@ -26,12 +26,8 @@ def execute_command(cmd):
 def reheader_all(dirFrom, dirTo, sv_files, sampleName):
     # create temp header with sample name
     copyfile("header", "header_temp")
-    fin = open("header_temp", "rt")
-    data = fin.read()
-    data = data.replace('SAMPLENAME', sampleName)
-    fin.close()
     fin = open("header_temp", "wt")
-    fin.write(data)
+    fin.write(generate_header(sampleName))
     fin.close()
 
     # reheader all files
@@ -45,17 +41,7 @@ def reheader_all(dirFrom, dirTo, sv_files, sampleName):
         exit_code = process.wait()
     os.remove("header_temp")
 
-def preprocessFiles(folder, sampleName):
-
-    sv_files = [f for f in listdir(folder) if isfile(join(folder, f))]
-
-    reheader_all(folder, "temp/", sv_files, sampleName)
-
-    sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
-
-    header = generate_header(sampleName)
-    for file in sv_files:
-        # awk -F '\t' '{ $4 = ($4 == "\." ? "N" : $4) } 1' OFS='\t' novoBreak.vcf
+def preprocessFile(file, header):
 
         cmd = "sed -i '/:ME:/d' temp/" + file
         execute_command(cmd)
@@ -85,6 +71,18 @@ def preprocessFiles(folder, sampleName):
         with open("temp/"+file, 'w') as fout:
             fout.write(header)
             fout.writelines(data[1:])
+
+def preprocessFiles(folder, sampleName):
+
+    sv_files = [f for f in listdir(folder) if isfile(join(folder, f))]
+
+    reheader_all(folder, "temp/", sv_files, sampleName)
+
+    sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
+
+    header = generate_header(sampleName)
+    for file in sv_files:
+        preprocessFile(file, header)
     return loadTempFiles(sampleName)
 
 def loadTempFiles(sampleName):

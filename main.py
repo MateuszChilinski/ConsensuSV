@@ -15,6 +15,9 @@ args = inputHandling()
 
 
 
+if (args.truth is not None):
+    copyfile(args.truth, "temp/truth.vcf")
+
 # preprocessing of the files
 # problems with no svlen?
 if not (args.no_preprocess):
@@ -22,11 +25,10 @@ if not (args.no_preprocess):
     os.mkdir("temp");
     print("Preprocessing files...")
 
-    if (args.truth is not None):
-        copyfile(args.truth, "temp/truth.vcf")
-
     sv_tools = utilities.preprocessFiles(args.sv_folder, args.sample)
 else:
+    if (args.truth is not None):
+        utilities.preprocessFile("temp/truth.vcf", utilities.generate_header(args.sample))
     sv_tools = utilities.loadTempFiles(args.sample)
 percDiff = 0.1
 
@@ -108,6 +110,8 @@ if (args.truth is not None): # learning phase
 
     filename = 'pretrained.model'
     pickle.dump(nn, open(filename, 'wb'))
+
+    os.remove("temp/truth.vcf")
 else:
     header = utilities.generate_header(args.sample_name)
     with open("output.vcf", 'w') as fout:

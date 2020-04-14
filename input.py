@@ -12,7 +12,7 @@ def inputHandling():
 
     parser.add_argument('-m', '--min_overlap', help='Minimum number of SVs in the neighbourhood for the SV to be reported (default 3).', type=int, default=3)
 
-    parser.add_argument('-t', '--truth', help='File used for training new model.', required=False)
+    parser.add_argument('-t', '--truth', help='File used for training new model. It is preprocessed even if --no_preprocess flag is set.', required=False)
 
     parser.add_argument('-np', '--no_preprocess', help='Flag used for skipping the preprocessing process - all the preprocessed files should be in temp/ folder.', action="store_true", required=False)
 
