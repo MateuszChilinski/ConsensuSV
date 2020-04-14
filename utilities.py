@@ -1,5 +1,5 @@
 import os
-import SVTool
+import SVTools
 
 from subprocess import Popen, PIPE
 from shutil import copyfile
