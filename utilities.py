@@ -1,4 +1,6 @@
 import os
+import SVTool
+
 from subprocess import Popen, PIPE
 from shutil import copyfile
 from os import listdir

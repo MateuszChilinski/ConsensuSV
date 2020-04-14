@@ -6,6 +6,8 @@ def inputHandling():
 
     parser.add_argument('-s', '--sample', help='Name of the sample.', required=True)
 
+    parser.add_argument('-mod', '--model', help='Model used for SV discovery (default default.model).', required=False, default="default.model")
+
     parser.add_argument('-o', '--output', help='Output file.', default="output.vcf")
 
     parser.add_argument('-m', '--min_overlap', help='Minimum number of SVs in the neighbourhood for the SV to be reported (default 3).', type=int, default=3)

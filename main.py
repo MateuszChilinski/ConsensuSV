@@ -4,7 +4,6 @@ import numpy
 import sys
 import pickle
 import utilities
-import SVTool
 import shutil
 
 from sklearn.model_selection import train_test_split
