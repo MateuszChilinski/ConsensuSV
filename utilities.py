@@ -2,6 +2,7 @@ import os
 from subprocess import Popen, PIPE
 from shutil import copyfile
 from os import listdir
+from os.path import isfile, join
 
 debug = 1
 
