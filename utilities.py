@@ -19,7 +19,7 @@ def execute_command(cmd):
         process = Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     process.communicate()
 
-def reheader_all(dirFrom, dirTo, sampleName):
+def reheader_all(dirFrom, dirTo, sv_files, sampleName):
     # create temp header with sample name
     copyfile("header", "header_temp")
     fin = open("header_temp", "rt")
@@ -42,7 +42,7 @@ def reheader_all(dirFrom, dirTo, sampleName):
     os.remove("header_temp")
 
 def preprocessFiles(folder, sampleName):
-    reheader_all(folder, "temp/", sampleName)
+    reheader_all(folder, "temp/", sv_files, sampleName)
 
     sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
 
