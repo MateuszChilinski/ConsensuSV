@@ -14,7 +14,7 @@ from sklearn.neural_network import MLPRegressor
 from input import inputHandling
 
 
-inputHandling()
+args = inputHandling()
 
 sv_files = [f for f in listdir(args.sv_folder) if isfile(join(args.sv_folder, f))]
 
