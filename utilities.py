@@ -24,7 +24,7 @@ def reheader_all(dirFrom, dirTo, sampleName):
     copyfile("header", "header_temp")
     fin = open("header_temp", "rt")
     data = fin.read()
-    data = data.replace('SAMPLENAME', sampleNamee)
+    data = data.replace('SAMPLENAME', sampleName)
     fin.close()
     fin = open("header_temp", "wt")
     fin.write(data)
