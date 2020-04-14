@@ -4,8 +4,8 @@ import os
 import numpy
 import sys
 import pickle
-import Utilities
-import SVTool
+from Utilities import __all__
+from SVTool import __all__
 import shutil
 
 from os import listdir
