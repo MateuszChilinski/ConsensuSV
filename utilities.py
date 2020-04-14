@@ -42,11 +42,13 @@ def reheader_all(dirFrom, dirTo, sv_files, sampleName):
     os.remove("header_temp")
 
 def preprocessFiles(folder, sampleName):
+
+    sv_files = [f for f in listdir(folder) if isfile(join(folder, f))]
+
     reheader_all(folder, "temp/", sv_files, sampleName)
 
     sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
 
-    sv_tools = list()
     header = generate_header(sampleName)
     for file in sv_files:
         # awk -F '\t' '{ $4 = ($4 == "\." ? "N" : $4) } 1' OFS='\t' novoBreak.vcf
@@ -79,6 +81,14 @@ def preprocessFiles(folder, sampleName):
         with open("temp/"+file, 'w') as fout:
             fout.write(header)
             fout.writelines(data[1:])
+    return loadTempFiles(sampleName)
+
+def loadTempFiles(sampleName):
+    sv_tools = list()
+    
+    sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
+    print(sv_files)
+    for file in sv_files:
         svtool = SVTool("temp/"+file)
         sv_tools.append(svtool)
     return sv_tools

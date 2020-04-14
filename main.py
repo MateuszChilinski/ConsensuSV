@@ -16,9 +16,7 @@ from input import inputHandling
 
 args = inputHandling()
 
-sv_files = [f for f in listdir(args.sv_folder) if isfile(join(args.sv_folder, f))]
 
-print(sv_files)
 
 # preprocessing of the files
 # problems with no svlen?
@@ -31,7 +29,8 @@ if not (args.no_preprocess):
         copyfile(args.truth, "temp/truth.vcf")
 
     sv_tools = utilities.preprocessFiles(args.sv_folder, args.sample)
-
+else:
+    sv_tools = utilities.loadTempFiles(args.sample)
 percDiff = 0.1
 
 X_vector = list()
