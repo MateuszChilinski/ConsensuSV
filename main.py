@@ -108,7 +108,7 @@ if (args.truth is not None): # learning phase
     filename = 'pretrained.model'
     pickle.dump(nn, open(filename, 'wb'))
 
-    os.remove("temp/truth.vcf")
+    #os.remove("temp/truth.vcf")
 else:
     header = utilities.generate_header(args.sample)
     with open("output.vcf", 'w') as fout:
