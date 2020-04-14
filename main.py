@@ -6,6 +6,7 @@ import sys
 import pickle
 import Utilities
 import SVTool
+import shutil
 
 from os import listdir
 from os.path import isfile, join
@@ -21,7 +22,7 @@ parser.add_argument('-s' '--sample', help='Name of the sample.', required=True)
 
 parser.add_argument('-o', '--output', help='Output file.', default="output.vcf")
 
-parser.add_argument('-m', '--min_overlap', help='Minimum number of SVs in the neighbourhood for the SV to be reported.', type=int, default=3)
+parser.add_argument('-m', '--min_overlap', help='Minimum number of SVs in the neighbourhood for the SV to be reported (default 3).', type=int, default=3)
 
 parser.add_argument('-t', '--truth', help='File used for training new model.', required=False)
 
