@@ -42,7 +42,7 @@ if not (args.no_preprocess):
     if (args.truth is not None):
         copyfile(args.truth, "temp/truth.vcf")
 
-    sv_tools = Utilities.preprocessFiles(args.sv_folder)
+    sv_tools = Utilities.preprocessFiles(args.sv_folder, args.sample)
 
 percDiff = 0.1
 

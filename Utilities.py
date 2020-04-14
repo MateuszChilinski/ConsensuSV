@@ -19,12 +19,12 @@ def execute_command(cmd):
         process = Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     process.communicate()
 
-def reheader_all(dirFrom, dirTo):
+def reheader_all(dirFrom, dirTo, sampleName):
     # create temp header with sample name
     copyfile("header", "header_temp")
     fin = open("header_temp", "rt")
     data = fin.read()
-    data = data.replace('SAMPLENAME', args.sample_name)
+    data = data.replace('SAMPLENAME', sampleNamee)
     fin.close()
     fin = open("header_temp", "wt")
     fin.write(data)
@@ -41,13 +41,13 @@ def reheader_all(dirFrom, dirTo):
         exit_code = process.wait()
     os.remove("header_temp")
 
-def preprocessFiles(folder):
-    reheader_all(folder, "temp/")
+def preprocessFiles(folder, sampleName):
+    reheader_all(folder, "temp/", sampleName)
 
     sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
 
     sv_tools = list()
-    header = generate_header(args.sample_name)
+    header = generate_header(sampleName)
     for file in sv_files:
         # awk -F '\t' '{ $4 = ($4 == "\." ? "N" : $4) } 1' OFS='\t' novoBreak.vcf
 
