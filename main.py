@@ -57,8 +57,6 @@ for svtool in sv_tools:
                 continue
             for sv2 in svtool2.sv_list:
                 if(sv2.used): continue
-                if(sv.chrom != sv2.chrom): # speeds the process up
-                    continue
                 if(sv2.pos > sv.pos+500): # fix later! it should be dependend on ci or % of svlen
                     break
                 if(sv.checkOverlap(sv2)):

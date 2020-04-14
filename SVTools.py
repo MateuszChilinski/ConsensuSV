@@ -67,7 +67,7 @@ class SVariant:
     def print_sv(self):
         print(self.svtype + ": " + self.chrom + " " + str(self.pos) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " - " + str(self.end) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " LEN: " + str(self.svlen) + " GT: " + self.gt)
     def checkOverlap(self, sv2):
-        if(self.chrom != sv.chrom):
+        if(self.chrom != sv2.chrom):
             return False
         # bear in mind that cipos first coord is negative, hence just addition (example cipos=-10,10)
         minPos1 = self.pos+self.cipos1
