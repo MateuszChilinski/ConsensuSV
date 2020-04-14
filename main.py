@@ -119,7 +119,7 @@ else:
     cmd = "cat output.vcf | awk '$1 ~ /^#/ {print $0;next} {print $0 | "+ "\"sort -k1,1V -k2,2n\"" + r"}' > output_sorted.vcf"
     utilities.execute_command(cmd)
 
-    os.replace("output_sorted.vcf", args.no_preprocess)
+    os.replace("output_sorted.vcf", args.output)
 
 #numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_test,y_pred)).T), axis=1), delimiter=',', comments="")
 
