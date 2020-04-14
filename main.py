@@ -9,7 +9,7 @@ import shutil
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPRegressor
 from input import inputHandling
-
+from SVTools import SVariant
 
 args = inputHandling()
 

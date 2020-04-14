@@ -1,11 +1,11 @@
 import os
-import SVTools
+
 
 from subprocess import Popen, PIPE
 from shutil import copyfile
 from os import listdir
 from os.path import isfile, join
-
+from SVTools import SVTool
 debug = 1
 
 def generate_header(sample_name):
