@@ -110,7 +110,7 @@ if (args.truth is not None): # learning phase
 
     os.remove("temp/truth.vcf")
 else:
-    header = utilities.generate_header(args.sample_name)
+    header = utilities.generate_header(args.sample)
     with open("output.vcf", 'w') as fout:
         fout.write(header)
         for sv in resulting_svs:
