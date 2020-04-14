@@ -15,21 +15,22 @@ from shutil import copyfile
 args = inputHandling()
 
 print(args.truth)
-exit()
 
-if (args.truth is not None):
-    copyfile(args.truth, "temp/truth.vcf")
+
 
 # preprocessing of the files
 # problems with no svlen?
 if not (args.no_preprocess):
     shutil.rmtree("temp");
     os.mkdir("temp");
+    if (args.truth is not None):
+        copyfile(args.truth, "temp/truth.vcf")
     print("Preprocessing files...")
 
     sv_tools = utilities.preprocessFiles(args.sv_folder, args.sample)
 else:
     if (args.truth is not None):
+        copyfile(args.truth, "temp/truth.vcf")
         utilities.preprocessFile("truth.vcf", utilities.generate_header(args.sample))
     sv_tools = utilities.loadTempFiles(args.sample)
 percDiff = 0.1
