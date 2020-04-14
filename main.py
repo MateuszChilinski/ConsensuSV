@@ -10,10 +10,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPRegressor
 from input import inputHandling
 from SVTools import SVariant
+from shutil import copyfile
 
 args = inputHandling()
-
-
 
 if (args.truth is not None):
     copyfile(args.truth, "temp/truth.vcf")
