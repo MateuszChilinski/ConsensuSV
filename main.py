@@ -4,6 +4,8 @@ import os
 import numpy
 import sys
 import pickle
+import Utilities
+import SVTool
 
 from os import listdir
 from os.path import isfile, join
@@ -12,266 +14,18 @@ from shutil import copyfile
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPRegressor
 
-debug = 1
-
-def generate_header(sample_name):
-    fin = open("header", "rt")
-    data = fin.read()
-    data = data.replace('SAMPLENAME', sample_name)
-    fin.close()
-    return data+"\n"
-
-def execute_command(cmd):
-    if(debug):
-        print(cmd)
-        process = Popen(cmd, shell=True, stdout=PIPE)
-    else:
-        process = Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
-    process.communicate()
-
-def reheader_all(dirFrom, dirTo):
-    # create temp header with sample name
-    copyfile("header", "header_temp")
-    fin = open("header_temp", "rt")
-    data = fin.read()
-    data = data.replace('SAMPLENAME', args.sample_name)
-    fin.close()
-    fin = open("header_temp", "wt")
-    fin.write(data)
-    fin.close()
-
-    # reheader all files
-    for file in sv_files:
-        cmd = r"bcftools reheader -h header_temp -o " + dirTo + file + " " + dirFrom + file
-        if(debug):
-            print(cmd)
-
-        process = Popen(cmd, shell=True, stdout=PIPE)
-        process.communicate()
-        exit_code = process.wait()
-    os.remove("header_temp")
-
-class SVariant:
-    def __init__(self, tool, line=None, chrom=None, pos=None, id=None, ref=None, end=None, gt=None, svlen=None, svtype=None, cipos1=None, cipos2=None, ciend1=None, ciend2=None):
-        self.tool = tool
-        if(line is not None):
-            self.parse_line(line)
-        else:
-            self.chrom = chrom
-            self.pos = pos
-            self.end = end
-            self.gt = gt
-            self.id = id
-            self.ref = ref
-            self.svlen = svlen
-            self.svtype = svtype
-            self.cipos1 = cipos1
-            self.cipos2 = cipos2
-            self.ciend1 = ciend1
-            self.ciend2 = ciend2
-            self.used = False
-    def printVcfLine(self):
-        return '\t'.join((self.chrom, str(self.pos), self.id, self.ref, "<"+self.svtype+">",
-                 ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE="+self.svtype+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt))
-    def parse_line(self, line):
-        values = line.split("\t")
-        self.chrom = values[0]
-        self.pos = int(values[1])
-        info = values[7].split(";")
-        self.gt = values[9]
-        self.ref = values[3]
-        
-        self.end = int(info[0].split("=")[1])
-        self.svlen = info[1].split("=")[1]
-
-        if(self.svlen == "."):
-            self.svlen = self.end-self.pos
-        self.svlen = int(self.svlen)
-
-        self.svtype = self.parse_type(info[2].split("=")[1])
-        cipos = info[3].split("=")[1]
-        ciend = info[4].split("=")[1]
-
-        if(cipos == "."):
-            cipos = "-10,10" # maybe other values? 0s?
-        if(ciend == "."):
-            ciend = "-10,10" # maybe other values? 0s?
-
-        cipos = cipos.split(",")
-        ciend = ciend.split(",")
-
-        self.cipos1 = int(cipos[0])
-        self.cipos2 = int(cipos[1])
-
-        self.ciend1 = int(ciend[0])
-        self.ciend2 = int(ciend[1])
-
-        self.used = False
-    def parse_type(self, type):
-        if "del" in type.casefold():
-            return "DEL"
-        if "inv" in type.casefold():
-            return "INV"
-        if "ins" in type.casefold():
-            return "INS"
-        if "dup" in type.casefold():
-            return "DUP"
-        return "UNK"
-    def print_sv(self):
-        print(self.svtype + ": " + self.chrom + " " + str(self.pos) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " - " + str(self.end) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " LEN: " + str(self.svlen) + " GT: " + self.gt)
-    def checkOverlap(self, sv2):
-        if(self.chrom != sv.chrom):
-            return False
-        # bear in mind that cipos first coord is negative, hence just addition (example cipos=-10,10)
-        minPos1 = self.pos+self.cipos1
-        maxPos1 = self.pos+self.cipos2
-        minPos2 = sv2.pos+sv2.cipos1
-        maxPos2 = sv2.pos+sv2.cipos2
-
-        minEnd1 = self.end+self.ciend1
-        maxEnd1 = self.end+self.ciend2
-        minEnd2 = sv2.end+self.ciend1
-        maxEnd2 = sv2.end+self.ciend2
-        if(max(minPos1, minPos2)-100 <= min(maxPos1, maxPos2)):
-            if(max(minEnd1, minEnd2)-100 <= min(maxEnd1, maxEnd2)):
-                return True
-        return False
-
-class SVTool:
-    max_conf = 200 # max confidence interval length
-    def __init__(self, filename):
-        self.tool = filename.split("/")[1].split(".")[0]
-        self.parse_file(filename)
-    def parse_file(self, filename):
-        self.sv_list = list()
-        with open(filename) as file:
-            for line in file:
-                if not(line.startswith('#')):
-                    sv = SVariant(self.tool, line)
-                    if(abs(sv.ciend2-sv.ciend1) > self.max_conf or abs(sv.cipos2-sv.cipos1) > self.max_conf):
-                        continue
-                    #print(self.tool + " | ", end = '')
-                    #sv.print_sv()
-                    self.sv_list.append(sv)
-
-def preprocessFiles(folder):
-    reheader_all(folder, "temp/")
-
-    sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
-
-    sv_tools = list()
-    header = generate_header(args.sample_name)
-    for file in sv_files:
-        # awk -F '\t' '{ $4 = ($4 == "\." ? "N" : $4) } 1' OFS='\t' novoBreak.vcf
-
-        cmd = "sed -i '/:ME:/d' temp/" + file
-        execute_command(cmd)
-
-        cmd = "sed -i '/0\/0/d' temp/" + file
-        execute_command(cmd)
-
-        cmd = "awk -F " + r"'\t'" + " '{ $4 = ($4 == \"\.\" ? \"N\" : $4) } 1' OFS=" + r"'\t' temp/" + file + " > temp/" + file + "_2"
-        execute_command(cmd)
-        
-        cmd = "cat temp/" + file + r"_2 | awk '$1 ~ /^#/ {print $0;next} {print $0 | "+ "\"sort -k1,1V -k2,2n\"" + r"}' > temp/" + file
-        execute_command(cmd)
-        
-        # remove MEI if there are any
-
-        # ensures there are no . in ref
-        additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
-
-        cmd = r"bcftools query -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(QUAL >= 50 || QUAL = " + "\".\"" + r") && ((SVLEN = " + "\".\"" + r") || (SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50))' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[%GT]\n' -o temp/"+file+"_2 temp/"+file    
-        execute_command(cmd)
-
-        #os.replace("temp/"+file+"_2", "temp/"+file)
-        os.replace("temp/"+file+"_2", "temp/"+file)
-        
-        with open("temp/"+file, 'r') as fin:
-            data = fin.read().splitlines(True)
-        with open("temp/"+file, 'w') as fout:
-            fout.write(header)
-            fout.writelines(data[1:])
-        svtool = SVTool("temp/"+file)
-        sv_tools.append(svtool)
-    return sv_tools
-
-def buildFreqDict(candidates):
-    freqDict = dict()
-    for candidate in candidates:
-        key = str(candidate.pos)+"-"+str(candidate.end)
-        if key not in freqDict:
-            freqDict[key] = 1
-        else:
-            freqDict[key] += 1
-    return freqDict
-
-def findMajority(sv, freqDict, candidates):
-    majorityFound = False
-    firstCandidate = None
-    winKey = ""
-
-    for key in freqDict:
-        if(freqDict[key]/len(candidates) >= 0.7):
-            print(sv.chrom + " " + sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
-            majorityFound = True
-            winKey = key
-            break
-    if(majorityFound):
-        for candidate in candidates:
-            key = str(candidate.pos)+"-"+str(candidate.end)
-            if(key == winKey):
-                firstCandidate = candidate
-                break
-    return (majorityFound, firstCandidate)
-
-def createSVTable():
-    sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
-
-    sv_tools = list()
-
-    for file in sv_files:
-        toolname = file.split(".")[0]
-        if(toolname == "truth"):
-            continue
-        sv_tools.append(toolname)
-    sv_tools.sort()
-    return sv_tools
-
-def preprocess_Y(Y_vector):
-    Y_prepr = list()
-    for sv in Y_vector:
-        Y_prepr.append(sv.pos)
-        Y_prepr.append(sv.end)
-    return Y_prepr
-def preprocess_X(X_vector):
-    X_prepr = list()
-    sv_all_tools = createSVTable()
-    for candidates in X_vector:
-        candidatesY_pos = list()
-        candidatesY_end = list()
-        for tool in sv_all_tools:
-            found = False
-            for sv in candidates:
-                if(tool == sv.tool):
-                    candidatesY_pos.append(sv.pos)
-                    candidatesY_end.append(sv.end)
-                    found = True
-                    break
-            if(found):
-                continue
-            candidatesY_pos.append(0) # tool not present
-            candidatesY_end.append(0)
-        X_prepr.append(candidatesY_pos)
-        X_prepr.append(candidatesY_end)
-    return X_prepr
 
 parser = argparse.ArgumentParser(description='Gets the SV consensus.')
-parser.add_argument('sv_folder', metavar='sv_folder',
-                   help='folder consisting the vcf files')
-parser.add_argument('sample_name', metavar='sample_name',
-                   help='name of the sample')
-parser.add_argument('--truth', help='used for training new model', required=False)
+parser.add_argument('-f', '--sv_folder', help='Folder containing raw outputs from SV callers.', required=True)
+parser.add_argument('-s' '--sample', help='Name of the sample.', required=True)
+
+parser.add_argument('-o', '--output', help='Output file.', default="output.vcf")
+
+parser.add_argument('-m', '--min_overlap', help='Minimum number of SVs in the neighbourhood for the SV to be reported.', type=int, default=3)
+
+parser.add_argument('-t', '--truth', help='File used for training new model.', required=False)
+
+parser.add_argument('-np', '--no_preprocess', help='Flag used for skipping the preprocessing process - all the preprocessed files should be in temp/ folder.', action="store_true", required=False)
 
 args = parser.parse_args()
 
@@ -279,15 +33,17 @@ sv_files = [f for f in listdir(args.sv_folder) if isfile(join(args.sv_folder, f)
 
 print(sv_files)
 
-print("Preprocessing files...")
 # preprocessing of the files
 # problems with no svlen?
-os.mkdir("temp");
+if not (args.no_preprocess):
+    shutil.rmtree("temp");
+    os.mkdir("temp");
+    print("Preprocessing files...")
 
-if (args.truth is not None):
-    copyfile(args.truth, "temp/truth.vcf")
+    if (args.truth is not None):
+        copyfile(args.truth, "temp/truth.vcf")
 
-sv_tools = preprocessFiles(args.sv_folder)
+    sv_tools = preprocessFiles(args.sv_folder)
 
 percDiff = 0.1
 
@@ -297,10 +53,6 @@ Y_vector = list()
 resulting_svs = list()
 
 consensusId = 1
-
-def markUsedCandidates(candidates):
-    for candidate in candidates:
-        candidate.used = True
 
 if (args.truth is None): # load model
     filename = 'pretrained.model'
@@ -382,6 +134,9 @@ else:
 
     cmd = "cat output.vcf | awk '$1 ~ /^#/ {print $0;next} {print $0 | "+ "\"sort -k1,1V -k2,2n\"" + r"}' > output_sorted.vcf"
     execute_command(cmd)
+
+    os.replace("output_sorted.vcf", args.no_preprocess)
+
 #numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_test,y_pred)).T), axis=1), delimiter=',', comments="")
 
 # all files are preprocessed now in unified form
