@@ -60,7 +60,7 @@ for svtool in sv_tools:
             for sv2 in svtool2.sv_list:
                 if(sv.chrom != sv2.chrom):
                     continue
-                if(sv2.pos > self.pos+500): # fix later! it should be dependend on ci or % of svlen
+                if(sv2.pos > sv.pos+500): # fix later! it should be dependend on ci or % of svlen
                     break
                 if(sv2.used): continue
                 if(sv.checkOverlap(sv2)):
