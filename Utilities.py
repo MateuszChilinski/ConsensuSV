@@ -1,3 +1,7 @@
+import os
+from subprocess import Popen, PIPE
+from shutil import copyfile
+
 debug = 1
 
 def generate_header(sample_name):
