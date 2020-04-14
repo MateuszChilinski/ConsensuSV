@@ -52,17 +52,17 @@ for svtool in sv_tools:
             continue
     for sv in svtool.sv_list:
         if(sv.used): continue
-        #if(sv.chrom != "chr1"):
-        #    continue
         candidates = list()
         candidates.append(sv)
         for svtool2 in sv_tools:
             if(svtool.tool == svtool2.tool):
                 continue
             for sv2 in svtool2.sv_list:
-                if(sv2.used): continue
-                if(sv2.pos > sv.pos+500): # fix later! it should be dependend on ci or % of svlen
+                if(sv.chrom != sv2.chrom):
+                    continue
+                if(sv2.pos > self.pos+500): # fix later! it should be dependend on ci or % of svlen
                     break
+                if(sv2.used): continue
                 if(sv.checkOverlap(sv2)):
                    candidates.append(sv2)
                    break
