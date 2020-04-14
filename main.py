@@ -78,7 +78,7 @@ for svtool in sv_tools:
                 consensusId += 1
             else:
                 #print("1")
-                result = loaded_model.predict(preprocess_X([candidates]))
+                result = loaded_model.predict(utilities.preprocess_X([candidates]))
                 pos = result[0]
                 end = result[1]
                 newSv = SVariant("consensus", None, sv.chrom, int(round(pos)), "consensus_"+str(consensusId), sv.ref, int(round(end)), sv.gt, int(round(pos-end)), sv.svtype, -10, 10, -10, 10)
