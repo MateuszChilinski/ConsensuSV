@@ -30,7 +30,7 @@ if not (args.no_preprocess):
     if (args.truth is not None):
         copyfile(args.truth, "temp/truth.vcf")
 
-    sv_tools = Utilities.preprocessFiles(args.sv_folder, args.sample)
+    sv_tools = utilities.preprocessFiles(args.sv_folder, args.sample)
 
 percDiff = 0.1
 
@@ -74,10 +74,10 @@ for svtool in sv_tools:
             X_vector.append(candidates)
             Y_vector.append(sv)
         else:
-            freqDict = Utilities.buildFreqDict(candidates)
+            freqDict = utilities.buildFreqDict(candidates)
 
             # maybe remove all candidates from svtool once consensus was established based on it?
-            (majorityFound, firstMajor) = Utilities.findMajority(sv, freqDict, candidates)
+            (majorityFound, firstMajor) = utilities.findMajority(sv, freqDict, candidates)
             if(majorityFound):
                 newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, -10, 10, -10, 10)
                 consensusId += 1
@@ -89,11 +89,11 @@ for svtool in sv_tools:
                 newSv = SVariant("consensus", None, sv.chrom, int(round(pos)), "consensus_"+str(consensusId), sv.ref, int(round(end)), sv.gt, int(round(pos-end)), sv.svtype, -10, 10, -10, 10)
                 consensusId += 1
             resulting_svs.append(newSv)
-            Utilities.markUsedCandidates(candidates)
+            utilities.markUsedCandidates(candidates)
 
 if (args.truth is not None): # learning phase
-    X_preprocessed_vector = Utilities.preprocess_X(X_vector)
-    Y_preprocessed_vector = Utilities.preprocess_Y(Y_vector)
+    X_preprocessed_vector = utilities.preprocess_X(X_vector)
+    Y_preprocessed_vector = utilities.preprocess_Y(Y_vector)
 
     X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.33, random_state=42, shuffle=True)
     nn = MLPRegressor(hidden_layer_sizes=(49, 14, 7), solver='lbfgs', max_iter=int(1e8), max_fun=30000, random_state=0)
@@ -113,14 +113,14 @@ if (args.truth is not None): # learning phase
     filename = 'pretrained.model'
     pickle.dump(nn, open(filename, 'wb'))
 else:
-    header = Utilities.generate_header(args.sample_name)
+    header = utilities.generate_header(args.sample_name)
     with open("output.vcf", 'w') as fout:
         fout.write(header)
         for sv in resulting_svs:
             fout.write(sv.printVcfLine())
 
     cmd = "cat output.vcf | awk '$1 ~ /^#/ {print $0;next} {print $0 | "+ "\"sort -k1,1V -k2,2n\"" + r"}' > output_sorted.vcf"
-    Utilities.execute_command(cmd)
+    utilities.execute_command(cmd)
 
     os.replace("output_sorted.vcf", args.no_preprocess)
 
