@@ -14,6 +14,9 @@ from shutil import copyfile
 
 args = inputHandling()
 
+print(args.truth)
+exit()
+
 if (args.truth is not None):
     copyfile(args.truth, "temp/truth.vcf")
 
