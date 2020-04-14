@@ -27,7 +27,7 @@ if not (args.no_preprocess):
     sv_tools = utilities.preprocessFiles(args.sv_folder, args.sample)
 else:
     if (args.truth is not None):
-        utilities.preprocessFile("temp/truth.vcf", utilities.generate_header(args.sample))
+        utilities.preprocessFile("truth.vcf", utilities.generate_header(args.sample))
     sv_tools = utilities.loadTempFiles(args.sample)
 percDiff = 0.1
 
