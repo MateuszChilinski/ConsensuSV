@@ -1,5 +1,5 @@
 class SVariant:
-    def __init__(self, tool, line=None, chrom=None, pos=None, id=None, ref=None, end=None, gt=None, svlen=None, svtype=None, cipos1=None, cipos2=None, ciend1=None, ciend2=None):
+    def __init__(self, tool, line=None, chrom=None, pos=None, id=None, ref=None, end=None, gt=None, svlen=None, svtype=None, cipos1=None, cipos2=None, ciend1=None, ciend2=None, algorithms=None):
         self.tool = tool
         if(line is not None):
             self.parse_line(line)
@@ -17,9 +17,10 @@ class SVariant:
             self.ciend1 = ciend1
             self.ciend2 = ciend2
             self.used = False
+            self.algorithms = algorithms
     def printVcfLine(self):
         return '\t'.join((self.chrom, str(self.pos), self.id, self.ref, "<"+self.svtype+">",
-                 ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE="+self.svtype+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt))
+                 ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE="+self.svtype+";ALGORITHM="+self.algorithms+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt))
     def parse_line(self, line):
         values = line.split("\t")
         self.chrom = values[0]

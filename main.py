@@ -78,14 +78,15 @@ for svtool in sv_tools:
             # maybe remove all candidates from svtool once consensus was established based on it?
             (majorityFound, firstMajor) = utilities.findMajority(sv, freqDict, candidates)
             if(majorityFound):
-                newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, -10, 10, -10, 10)
+                newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, 
+                                 -10, 10, -10, 10, utilities.generateAlgorithmsList(candidates))
                 consensusId += 1
             else:
                 #print("1")
                 result = loaded_model.predict(utilities.preprocess_X([candidates]))
                 pos = result[0]
                 end = result[1]
-                newSv = SVariant("consensus", None, sv.chrom, int(round(pos)), "consensus_"+str(consensusId), sv.ref, int(round(end)), sv.gt, int(round(pos-end)), sv.svtype, -10, 10, -10, 10)
+                newSv = SVariant("consensus", None, sv.chrom, int(round(pos)), "consensus_"+str(consensusId), sv.ref, int(round(end)), sv.gt, int(round(pos-end)), sv.svtype, -10, 10, -10, 10, utilities.generateAlgorithmsList(candidates))
                 consensusId += 1
             resulting_svs.append(newSv)
             utilities.markUsedCandidates(candidates)

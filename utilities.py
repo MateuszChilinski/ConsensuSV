@@ -168,3 +168,9 @@ def preprocess_X(X_vector):
 def markUsedCandidates(candidates):
     for candidate in candidates:
         candidate.used = True
+
+def generateAlgorithmsList(candidates):
+    algorithms = ""
+    for candidate in candidates:
+        algorithms += candidate.tool+","
+    return algorithms[0:-1]
