@@ -82,7 +82,6 @@ for sample in samples:
             if(len(candidates) < 3): # if fewer than 3 then no point in checking it out
                 continue
             if (args.train): # learning phase
-                print("1")
                 candidates.remove(sv)
                 X_vector.append(candidates)
                 Y_vector.append(sv)
