@@ -47,7 +47,7 @@ for sample in samples:
         sv_tools = utilities.preprocessFiles(sample_dir, sample)
     else:
         if (args.train):
-            utilities.preprocessFile(sample_dir+"truth.vcf", sample, utilities.generate_header(sample))
+            utilities.preprocessFile(sample+"truth.vcf", sample, utilities.generate_header(sample))
         sv_tools = utilities.loadTempFiles(sample)
     percDiff = 0.1
 
