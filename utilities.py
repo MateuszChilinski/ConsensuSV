@@ -162,8 +162,8 @@ def preprocess_X(X_vector):
                     break
             if(found):
                 continue
-            candidatesY_pos.append(avg(c.pos for c in candidates)) # tool not present
-            candidatesY_end.append(avg(c.end for c in candidates))
+            candidatesY_pos.append(sum(c.pos for c in candidates)/len(candidates)) # tool not present
+            candidatesY_end.append(sum(c.end for c in candidates)/len(candidates))
         X_prepr.append(candidatesY_pos)
         X_prepr.append(candidatesY_end)
     return X_prepr
