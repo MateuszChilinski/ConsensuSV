@@ -12,6 +12,7 @@ from input import inputHandling
 from SVTools import SVariant
 from shutil import copyfile
 from os.path import isdir, join
+from os import listdir
 
 args = inputHandling()
 
