@@ -86,14 +86,14 @@ def preprocessFiles(folder, sampleName):
     return loadTempFiles(sampleName)
 
 def loadTempFiles(sampleName):
-    sv_tools = list()
+    sv_tools = set()
     
     sv_files = [f for f in listdir("temp/"+sampleName+"/") if isfile(join("temp/"+sampleName+"/", f))]
     print(sv_files)
     for file in sv_files:
         svtool = SVTool("temp/"+sampleName+"/"+file)
         sv_tools.add(svtool)
-    return sv_tools
+    return sorted(sv_tools)
 
 def buildFreqDict(candidates):
     freqDict = dict()
@@ -135,7 +135,7 @@ def createSVTable():
             toolname = file.split(".")[0]
             if(toolname == "truth"):
                 continue
-            sv_tools.append(toolname)
+            sv_tools.add(toolname)
     return sorted(sv_tools)
 
 def preprocess_Y(Y_vector):
