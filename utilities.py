@@ -151,6 +151,7 @@ def preprocess_X(X_vector):
     for candidates in X_vector:
         candidatesY_pos = list()
         candidatesY_end = list()
+        
         for tool in sv_all_tools:
             found = False
             for sv in candidates:
@@ -161,8 +162,8 @@ def preprocess_X(X_vector):
                     break
             if(found):
                 continue
-            candidatesY_pos.append(0) # tool not present
-            candidatesY_end.append(0)
+            candidatesY_pos.append(avg(c.pos for c in candidates)) # tool not present
+            candidatesY_end.append(avg(c.end for c in candidates))
         X_prepr.append(candidatesY_pos)
         X_prepr.append(candidatesY_end)
     return X_prepr
