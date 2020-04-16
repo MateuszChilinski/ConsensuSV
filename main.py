@@ -53,7 +53,7 @@ for sample in samples:
 
     consensusId = 1
 
-    if (!args.train): # load model
+    if not(args.train): # load model
         filename = 'pretrained.model'
         loaded_model = pickle.load(open(filename, 'rb'))
 
