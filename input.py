@@ -13,7 +13,7 @@ def inputHandling():
 
     parser.add_argument('-t', '--train', help='Creates new model. Requires truth.vcf to be present in all the sv folders. VCF file truth.vcf is preprocessed even if flag --no_preprocess is set.', action="store_true", required=False)
 
-    parser.add_argument('-np', '--no_preprocess', help='Flag used for skipping the preprocessing process - all the preprocessed files should be in temp/ folder.', required=False)
+    parser.add_argument('-np', '--no_preprocess', help='Flag used for skipping the preprocessing process - all the preprocessed files should be in temp/ folder.', action="store_true", required=False)
 
     args = parser.parse_args()
 
