@@ -29,13 +29,16 @@ folders = [f for f in listdir(samples_folder) if isdir(join(samples_folder, f))]
 
 samples = [f.split('/')[-1] for f in folders]
 if not (args.no_preprocess):
-    shutil.rmtree("temp");
+    if os.path.exists("temp") and os.path.isdir("temp"):
+        shutil.rmtree("temp")
     os.mkdir("temp");
+
 for sample in samples:
     print(sample)
     if not (args.no_preprocess):
-        shutil.rmtree("temp/"+sample);
-        os.mkdir("temp/"+sample);
+        if os.path.exists("temp") and os.path.isdir("temp"):
+            shutil.rmtree("temp/"+sample);
+        os.mkdir("temp/"+sample)
 
         print("Preprocessing files of "+sample+"...")
 
