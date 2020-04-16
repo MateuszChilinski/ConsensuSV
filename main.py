@@ -59,6 +59,7 @@ for sample in samples:
 
     resulting_svs = list()
     for svtool in sv_tools:
+        print(svtools.tool)
         if (args.train):
             if(svtool.tool != "truth"):
                 continue
@@ -90,12 +91,10 @@ for sample in samples:
                 # maybe remove all candidates from svtool once consensus was established based on it?
                 (majorityFound, firstMajor) = utilities.findMajority(sv, freqDict, candidates)
                 if(majorityFound):
-                    print("1")
                     newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, 
                                      -10, 10, -10, 10, utilities.generateAlgorithmsList(candidates))
                     consensusId += 1
                 else:
-                    print("2")
                     result = loaded_model.predict(utilities.preprocess_X([candidates]))
                     pos = result[0]
                     end = result[1]
