@@ -34,18 +34,20 @@ if not (args.no_preprocess):
     os.mkdir("temp");
 
 for sample in samples:
-    print(sample)
+    sample_dir = samples_folder+sample+"/"
+    sample_temp_dir = "temp"+sample
+
     if not (args.no_preprocess):
-        if os.path.exists("temp"+sample) and os.path.isdir("temp"+sample):
-            shutil.rmtree("temp/"+sample);
-        os.mkdir("temp/"+sample)
+        if os.path.exists(sample_temp_dir) and os.path.isdir(sample_temp_dir):
+            shutil.rmtree(sample_temp_dir);
+        os.mkdir(sample_temp_dir)
 
         print("Preprocessing files of "+sample+"...")
 
-        sv_tools = utilities.preprocessFiles(samples_folder+sample+"/", sample)
+        sv_tools = utilities.preprocessFiles(sample_dir, sample)
     else:
         if (args.train is not None):
-            utilities.preprocessFile(samples_folder+"/"+sample+"/"+"truth.vcf", sample, utilities.generate_header(sample))
+            utilities.preprocessFile(sample_dir+"truth.vcf", sample, utilities.generate_header(sample))
         sv_tools = utilities.loadTempFiles(sample)
     percDiff = 0.1
 
