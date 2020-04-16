@@ -136,7 +136,7 @@ def createSVTable():
             if(toolname == "truth"):
                 continue
             sv_tools.append(toolname)
-    return sv_tools.sorted()
+    return sorted(sv_tools)
 
 def preprocess_Y(Y_vector):
     Y_prepr = list()
