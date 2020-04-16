@@ -82,7 +82,7 @@ def preprocessFiles(folder, sampleName):
 
     header = generate_header(sampleName)
     for file in sv_files:
-        preprocessFile(file, sampleName, header)
+        preprocessFile(sampleName+"/"+file, sampleName, header)
     return loadTempFiles(sampleName)
 
 def loadTempFiles(sampleName):
