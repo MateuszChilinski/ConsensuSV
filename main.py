@@ -127,7 +127,7 @@ if (args.train): # learning phase
     Y_preprocessed_vector = utilities.preprocess_Y(Y_vector)
 
     X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.1, random_state=42, shuffle=True)
-    nn = MLPRegressor(hidden_layer_sizes=(7), solver='sgd', max_iter=int(1e6), max_fun=45000, random_state=0)
+    nn = MLPRegressor(hidden_layer_sizes=(), solver='adam', max_iter=int(1e6), max_fun=45000, random_state=0)
 
     print("Creating the model...")
 
@@ -144,6 +144,6 @@ if (args.train): # learning phase
     filename = 'pretrained.model'
     pickle.dump(nn, open(filename, 'wb'))
     
-    numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_test,y_pred)).T, (y_test-y_pred)), axis=1), delimiter=',', comments="")
+    numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_test,y_pred)).T), axis=1), delimiter=',', comments="")
 
 # all files are preprocessed now in unified form
