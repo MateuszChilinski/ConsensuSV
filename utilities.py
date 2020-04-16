@@ -41,7 +41,7 @@ def reheader_all(dirFrom, dirTo, sv_files, sampleName):
         exit_code = process.wait()
     os.remove("header_temp")
 
-def preprocessFile(file, header):
+def preprocessFile(file, sampleName, header):
 
         cmd = "sed -i '/:ME:/d' temp/" + file
         execute_command(cmd)
@@ -82,7 +82,7 @@ def preprocessFiles(folder, sampleName):
 
     header = generate_header(sampleName)
     for file in sv_files:
-        preprocessFile(file, header)
+        preprocessFile(file, sampleName, header)
     return loadTempFiles(sampleName)
 
 def loadTempFiles(sampleName):

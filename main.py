@@ -28,19 +28,21 @@ samples_folder = args.sv_folder
 folders = [f for f in listdir(samples_folder) if isdir(join(samples_folder, f))]
 
 samples = [f.split('/')[-1] for f in folders]
-
+if not (args.no_preprocess):
+    shutil.rmtree("temp");
+    os.mkdir("temp");
 for sample in samples:
     print(sample)
     if not (args.no_preprocess):
-        shutil.rmtree("temp");
-        os.mkdir("temp");
+        shutil.rmtree("temp/"+sampleName);
+        os.mkdir("temp/"+sampleName);
 
         print("Preprocessing files of "+sample+"...")
 
-        sv_tools = utilities.preprocessFiles(samples_folder, sample)
+        sv_tools = utilities.preprocessFiles(samples_folder+"/"+sample, sample)
     else:
         if (args.train is not None):
-            utilities.preprocessFile("truth.vcf", utilities.generate_header(args.sample))
+            utilities.preprocessFile(samples_folder+"/"+sample+"/"+"truth.vcf", sampleName, utilities.generate_header(sample))
         sv_tools = utilities.loadTempFiles(args.sample)
     percDiff = 0.1
 
