@@ -88,7 +88,7 @@ class SVariant:
 class SVTool:
     max_conf = 200 # max confidence interval length
     def __init__(self, filename):
-        self.tool = filename.split("/")[1].split(".")[0]
+        self.tool = filename.split("/")[-1].split(".")[0]
         self.parse_file(filename)
     def parse_file(self, filename):
         self.sv_list = list()

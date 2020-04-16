@@ -89,7 +89,7 @@ def loadTempFiles(sampleName):
     sv_tools = list()
     
     sv_files = [f for f in listdir("temp/"+sampleName+"/") if isfile(join("temp/"+sampleName+"/", f))]
-    print(sv_files)
+
     for file in sv_files:
         svtool = SVTool("temp/"+sampleName+"/"+file)
         sv_tools.append(svtool)
