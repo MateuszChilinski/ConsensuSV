@@ -34,9 +34,8 @@ if not (args.no_preprocess):
         shutil.rmtree("temp")
     os.mkdir("temp");
 if not(args.train):
-    if os.path.exists("output") and os.path.isdir("output"):
-        shutil.rmtree("output")
-    os.mkdir("output");
+    if not (os.path.exists("output") and os.path.isdir("output")):
+        os.mkdir("output");
 for sample in samples:
     sample_dir = samples_folder+sample+"/"
     sample_temp_dir = "temp/"+sample
