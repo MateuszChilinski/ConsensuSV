@@ -47,6 +47,7 @@ for sample in samples:
         sv_tools = utilities.preprocessFiles(sample_dir, sample)
     else:
         if (args.train):
+            copyfile(sample_dir+"truth.vcf", sample_temp_dir+"/truth.vcf")
             utilities.preprocessFile(sample+"/truth.vcf", sample, utilities.generate_header(sample))
         sv_tools = utilities.loadTempFiles(sample)
     percDiff = 0.1
@@ -117,6 +118,8 @@ for sample in samples:
             shutil.rmtree("output")
         os.mkdir("output");
         os.replace("output_sorted.vcf", "output/"+args.output+"_"+sample+".vcf")
+    else:
+        os.remove("temp/"+sample+"/truth.vcf")
 
 if (args.train): # learning phase
     X_preprocessed_vector = utilities.preprocess_X(X_vector)
