@@ -93,6 +93,7 @@ def loadTempFiles(sampleName):
     for file in sv_files:
         svtool = SVTool("temp/"+sampleName+"/"+file)
         sv_tools.append(svtool)
+    sv_tools.sort(key=lambda x: x.tool)
     return sv_tools
 
 def buildFreqDict(candidates):
