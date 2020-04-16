@@ -42,7 +42,7 @@ for sample in samples:
 
         print("Preprocessing files of "+sample+"...")
 
-        sv_tools = utilities.preprocessFiles(samples_folder+"/"+sample, sample)
+        sv_tools = utilities.preprocessFiles(samples_folder+sample+"/", sample)
     else:
         if (args.train is not None):
             utilities.preprocessFile(samples_folder+"/"+sample+"/"+"truth.vcf", sample, utilities.generate_header(sample))
