@@ -51,13 +51,13 @@ for sample in samples:
 
     consensusId = 1
 
-    if (args.truth is None): # load model
+    if (args.train is None): # load model
         filename = 'pretrained.model'
         loaded_model = pickle.load(open(filename, 'rb'))
 
     resulting_svs = list()
     for svtool in sv_tools:
-        if (args.truth is not None):
+        if (args.train is not None):
             if(svtool.tool != "truth"):
                 continue
         for sv in svtool.sv_list:
@@ -78,7 +78,7 @@ for sample in samples:
                        break
             if(len(candidates) < 3): # if fewer than 3 then no point in checking it out
                 continue
-            if (args.truth is not None): # learning phase
+            if (args.train is not None): # learning phase
                 candidates.remove(sv)
                 X_vector.append(candidates)
                 Y_vector.append(sv)
@@ -100,7 +100,7 @@ for sample in samples:
                     consensusId += 1
                 resulting_svs.append(newSv)
                 utilities.markUsedCandidates(candidates)
-    if (args.truth is None):
+    if (args.train is None):
         header = utilities.generate_header(args.sample)
         with open("output.vcf", 'w') as fout:
             fout.write(header)
@@ -112,7 +112,7 @@ for sample in samples:
 
         os.replace("output_sorted.vcf", args.output)
 
-if (args.truth is not None): # learning phase
+if (args.train is not None): # learning phase
     X_preprocessed_vector = utilities.preprocess_X(X_vector)
     Y_preprocessed_vector = utilities.preprocess_Y(Y_vector)
 
