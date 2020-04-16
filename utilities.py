@@ -64,11 +64,11 @@ def preprocessFile(file, sampleName, header):
         execute_command(cmd)
 
         #os.replace("temp/"+sampleName+"/"+file+"_2", "temp/"+sampleName+"/"+file)
-        os.replace("temp/"+sampleName+"/"+file+"_2", "temp/"+sampleName+"/"+file)
+        os.replace("temp/"+file+"_2", "temp/"+file)
         
-        with open("temp/"+sampleName+"/"+file, 'r') as fin:
+        with open("temp/"+file, 'r') as fin:
             data = fin.read().splitlines(True)
-        with open("temp/"+sampleName+"/"+file, 'w') as fout:
+        with open("temp/"+file, 'w') as fout:
             fout.write(header)
             fout.writelines(data[1:])
 
