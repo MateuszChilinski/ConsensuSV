@@ -1,4 +1,9 @@
 import re
+import argparse
+
+parser = argparse.ArgumentParser(description='Extracts sample.')
+
+parser.add_argument('-f', '--sv_folder', help='Sample to extract.', required=True)
 
 
 open('charles_pass','w').writelines([ line for line in open('ALL_Illumina_Integrate_20170206.vcf') if 'PASS' in line or '#' in line])
