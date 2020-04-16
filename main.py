@@ -144,6 +144,6 @@ if (args.train): # learning phase
     filename = 'pretrained.model'
     pickle.dump(nn, open(filename, 'wb'))
     
-    numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_test,y_pred)).T), axis=1), delimiter=',', comments="")
+    numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_test,y_pred)).T, (y_test-y_pred).T), axis=1), delimiter=',', comments="")
 
 # all files are preprocessed now in unified form
