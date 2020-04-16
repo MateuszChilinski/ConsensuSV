@@ -35,7 +35,7 @@ if not (args.no_preprocess):
 
 for sample in samples:
     sample_dir = samples_folder+sample+"/"
-    sample_temp_dir = "temp"+sample
+    sample_temp_dir = "temp/"+sample
 
     if not (args.no_preprocess):
         if os.path.exists(sample_temp_dir) and os.path.isdir(sample_temp_dir):
