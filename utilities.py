@@ -63,12 +63,12 @@ def preprocessFile(file, header):
         cmd = r"bcftools query -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(QUAL >= 50 || QUAL = " + "\".\"" + r") && ((SVLEN = " + "\".\"" + r") || (SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50))' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[%GT]\n' -o temp/"+file+"_2 temp/"+file    
         execute_command(cmd)
 
-        #os.replace("temp/"+file+"_2", "temp/"+file)
-        os.replace("temp/"+file+"_2", "temp/"+file)
+        #os.replace("temp/"+sampleName+"/"+file+"_2", "temp/"+sampleName+"/"+file)
+        os.replace("temp/"+sampleName+"/"+file+"_2", "temp/"+sampleName+"/"+file)
         
-        with open("temp/"+file, 'r') as fin:
+        with open("temp/"+sampleName+"/"+file, 'r') as fin:
             data = fin.read().splitlines(True)
-        with open("temp/"+file, 'w') as fout:
+        with open("temp/"+sampleName+"/"+file, 'w') as fout:
             fout.write(header)
             fout.writelines(data[1:])
 
@@ -76,9 +76,9 @@ def preprocessFiles(folder, sampleName):
 
     sv_files = [f for f in listdir(folder) if isfile(join(folder, f))]
 
-    reheader_all(folder, "temp/", sv_files, sampleName)
+    reheader_all(folder, "temp/"+sampleName+"/"+sampleName+"/", sv_files, sampleName)
 
-    sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
+    sv_files = [f for f in listdir("temp/"+sampleName+"/") if isfile(join("temp/"+sampleName+"/", f))]
 
     header = generate_header(sampleName)
     for file in sv_files:
@@ -88,10 +88,10 @@ def preprocessFiles(folder, sampleName):
 def loadTempFiles(sampleName):
     sv_tools = list()
     
-    sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
+    sv_files = [f for f in listdir("temp/"+sampleName+"/") if isfile(join("temp/"+sampleName+"/", f))]
     print(sv_files)
     for file in sv_files:
-        svtool = SVTool("temp/"+file)
+        svtool = SVTool("temp/"+sampleName+"/"+file)
         sv_tools.append(svtool)
     return sv_tools
 
@@ -125,7 +125,7 @@ def findMajority(sv, freqDict, candidates):
     return (majorityFound, firstCandidate)
 
 def createSVTable():
-    sv_files = [f for f in listdir("temp/") if isfile(join("temp/", f))]
+    sv_files = [f for f in listdir("temp/"+sampleName+"/") if isfile(join("temp/"+sampleName+"/", f))]
 
     sv_tools = list()
 

@@ -37,7 +37,7 @@ for sample in samples:
 
         print("Preprocessing files of "+sample+"...")
 
-        sv_tools = utilities.preprocessFiles(args.sv_folder, args.sample)
+        sv_tools = utilities.preprocessFiles(samples_folder, sample)
     else:
         if (args.train is not None):
             utilities.preprocessFile("truth.vcf", utilities.generate_header(args.sample))
@@ -128,8 +128,6 @@ if (args.truth is not None): # learning phase
 
     filename = 'pretrained.model'
     pickle.dump(nn, open(filename, 'wb'))
-
-    os.remove("temp/truth.vcf")
 
 
 #numpy.savetxt("foo.csv", numpy.concatenate((X_test, numpy.vstack((y_test,y_pred)).T), axis=1), delimiter=',', comments="")
