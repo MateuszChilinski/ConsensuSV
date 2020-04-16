@@ -121,6 +121,8 @@ for sample in samples:
         os.remove("temp/"+sample+"/truth.vcf")
 
 if (args.train): # learning phase
+    print("Preparing sets...")
+
     X_preprocessed_vector = utilities.preprocess_X(X_vector)
     Y_preprocessed_vector = utilities.preprocess_Y(Y_vector)
 
