@@ -92,7 +92,7 @@ def loadTempFiles(sampleName):
     print(sv_files)
     for file in sv_files:
         svtool = SVTool("temp/"+sampleName+"/"+file)
-        sv_tools.append(svtool)
+        sv_tools.add(svtool)
     return sv_tools
 
 def buildFreqDict(candidates):
