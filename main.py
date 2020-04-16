@@ -127,7 +127,7 @@ if (args.train): # learning phase
     Y_preprocessed_vector = utilities.preprocess_Y(Y_vector)
 
     X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.1, random_state=42, shuffle=True)
-    nn = MLPRegressor(hidden_layer_sizes=(14, 7), solver='lbfgs', max_iter=int(1e6), max_fun=45000, random_state=0)
+    nn = MLPRegressor(hidden_layer_sizes=(14), solver='lbfgs', max_iter=int(1e6), max_fun=45000, random_state=0)
 
     print("Creating the model...")
 
