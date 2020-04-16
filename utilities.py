@@ -76,7 +76,7 @@ def preprocessFiles(folder, sampleName):
 
     sv_files = [f for f in listdir(folder) if isfile(join(folder, f))]
 
-    reheader_all(folder, "temp/"+sampleName+"/"+sampleName+"/", sv_files, sampleName)
+    reheader_all(folder, "temp/"+sampleName+"/", sv_files, sampleName)
 
     sv_files = [f for f in listdir("temp/"+sampleName+"/") if isfile(join("temp/"+sampleName+"/", f))]
 
