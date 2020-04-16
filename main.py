@@ -59,7 +59,7 @@ for sample in samples:
 
     resulting_svs = list()
     for svtool in sv_tools:
-        print(svtools.tool)
+        print(svtool.tool)
         if (args.train):
             if(svtool.tool != "truth"):
                 continue
