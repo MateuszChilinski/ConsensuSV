@@ -125,17 +125,18 @@ def findMajority(sv, freqDict, candidates):
     return (majorityFound, firstCandidate)
 
 def createSVTable():
-    sv_files = [f for f in listdir("temp/"+sampleName+"/") if isfile(join("temp/"+sampleName+"/", f))]
+    sv_samples = [d.split('/')[-1] for d in listdir("temp/") if isdir(join("temp/", d))]
+    
+    sv_tools = set()
+    for sampleName in sv_samples:
+        sv_files = [f for f in listdir("temp/"+sampleName+"/") if isfile(join("temp/"+sampleName+"/", f))]
 
-    sv_tools = list()
-
-    for file in sv_files:
-        toolname = file.split(".")[0]
-        if(toolname == "truth"):
-            continue
-        sv_tools.append(toolname)
-    sv_tools.sort()
-    return sv_tools
+        for file in sv_files:
+            toolname = file.split(".")[0]
+            if(toolname == "truth"):
+                continue
+            sv_tools.append(toolname)
+    return sv_tools.sorted()
 
 def preprocess_Y(Y_vector):
     Y_prepr = list()
