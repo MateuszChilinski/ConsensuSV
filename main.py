@@ -36,7 +36,7 @@ if not (args.no_preprocess):
 for sample in samples:
     print(sample)
     if not (args.no_preprocess):
-        if os.path.exists("temp") and os.path.isdir("temp"):
+        if os.path.exists("temp"+sample) and os.path.isdir("temp"+sample):
             shutil.rmtree("temp/"+sample);
         os.mkdir("temp/"+sample)
 
