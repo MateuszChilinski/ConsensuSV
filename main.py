@@ -103,7 +103,7 @@ for sample in samples:
                 resulting_svs.append(newSv)
                 utilities.markUsedCandidates(candidates)
     if not(args.train):
-        header = utilities.generate_header(args.sample)
+        header = utilities.generate_header(sample)
         with open("output.vcf", 'w') as fout:
             fout.write(header)
             for sv in resulting_svs:
@@ -112,7 +112,11 @@ for sample in samples:
         cmd = "cat output.vcf | awk '$1 ~ /^#/ {print $0;next} {print $0 | "+ "\"sort -k1,1V -k2,2n\"" + r"}' > output_sorted.vcf"
         utilities.execute_command(cmd)
 
-        os.replace("output_sorted.vcf", args.output)
+        
+        if os.path.exists("output") and os.path.isdir("output"):
+            shutil.rmtree("output")
+        os.mkdir("output");
+        os.replace("output_sorted.vcf", "output/"+args.output+"_"+sample+".vcf")
 
 if (args.train): # learning phase
     X_preprocessed_vector = utilities.preprocess_X(X_vector)
