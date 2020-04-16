@@ -33,7 +33,10 @@ if not (args.no_preprocess):
     if os.path.exists("temp") and os.path.isdir("temp"):
         shutil.rmtree("temp")
     os.mkdir("temp");
-
+if not(args.train):
+    if os.path.exists("output") and os.path.isdir("output"):
+        shutil.rmtree("output")
+    os.mkdir("output");
 for sample in samples:
     sample_dir = samples_folder+sample+"/"
     sample_temp_dir = "temp/"+sample
@@ -114,9 +117,6 @@ for sample in samples:
         utilities.execute_command(cmd)
 
         
-        if os.path.exists("output") and os.path.isdir("output"):
-            shutil.rmtree("output")
-        os.mkdir("output");
         os.replace("output_sorted.vcf", "output/"+args.output+"_"+sample+".vcf")
     else:
         os.remove("temp/"+sample+"/truth.vcf")
