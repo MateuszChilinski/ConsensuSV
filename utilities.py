@@ -142,8 +142,8 @@ def createSVTable():
 def preprocess_Y(Y_vector):
     Y_prepr = list()
     for sv in Y_vector:
-        Y_prepr.append(sv.pos)
-        Y_prepr.append(sv.end)
+        Y_prepr.append(float(sv.pos))
+        Y_prepr.append(float(sv.end))
     return Y_prepr
 def preprocess_X(X_vector):
     X_prepr = list()
@@ -156,14 +156,14 @@ def preprocess_X(X_vector):
             found = False
             for sv in candidates:
                 if(tool == sv.tool):
-                    candidatesY_pos.append(sv.pos)
-                    candidatesY_end.append(sv.end)
+                    candidatesY_pos.append(float(sv.pos))
+                    candidatesY_end.append(float(sv.end))
                     found = True
                     break
             if(found):
                 continue
-            candidatesY_pos.append(sum(c.pos for c in candidates)/len(candidates)) # tool not present
-            candidatesY_end.append(sum(c.end for c in candidates)/len(candidates))
+            candidatesY_pos.append(sum(float(c.pos) for c in candidates)/float(len(candidates))) # tool not present
+            candidatesY_end.append(sum(float(c.end) for c in candidates)/float(len(candidates)))
         X_prepr.append(candidatesY_pos)
         X_prepr.append(candidatesY_end)
     return X_prepr
