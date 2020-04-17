@@ -3,11 +3,12 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Extracts sample.')
 
-parser.add_argument('-f', '--sv_folder', help='Sample to extract.', required=True)
+parser.add_argument('-s', '--sample', help='Sample name to extract.', required=True)
 
+args = parser.parse_args()
 
 open('charles_pass','w').writelines([ line for line in open('ALL_Illumina_Integrate_20170206.vcf') if 'PASS' in line or '#' in line])
-open('charles_pass2','w').writelines([ line for line in open('charles_pass') if 'HG00512' in line or '#' in line])
+open('charles_pass2','w').writelines([ line for line in open('charles_pass') if args.sample in line or '#' in line])
 
 full_text = ""
 
@@ -32,5 +33,5 @@ with open('charles_pass2', 'r') as f:
         else:
             full_text += line
 
-with open("charles_pass3.vcf", 'w') as fout:
+with open("charles_"+args.sample+".vcf", 'w') as fout:
     fout.write(full_text)
