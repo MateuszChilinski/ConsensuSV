@@ -66,6 +66,9 @@ for sample in samples:
         if (args.train):
             if(svtool.tool != "truth"):
                 continue
+        else:
+            if(svtool.tool == "truth"):
+                continue
         for sv in svtool.sv_list:
             if(sv.used): continue
             candidates = list()
