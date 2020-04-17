@@ -22,7 +22,7 @@ if os.path.exists('charles_pass'):
 i = 0
 for sample in samples:
     open('charles_pass','w').writelines([ line for line in open('ALL_Illumina_Integrate_20170206.vcf') if 'PASS' in line or '#' in line])
-    open('charles_pass2','w').writelines([ line for line in open('charles_pass') if args.sample in line or '#' in line])
+    open('charles_pass2','w').writelines([ line for line in open('charles_pass') if sample in line or '#' in line])
 
     full_text = ""
     with open('charles_pass2', 'r') as f:
