@@ -74,7 +74,7 @@ for sample in samples:
             candidates = list()
             candidates.append(sv)
             for svtool2 in sv_tools:
-                if(svtool.tool == "truth"):
+                if(svtool2.tool == "truth"):
                     continue
                 if(svtool.tool == svtool2.tool):
                     continue
