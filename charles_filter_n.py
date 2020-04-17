@@ -59,14 +59,14 @@ for sample in samples:
     process.communicate()
     cmd = "grep -vc \"#\" charles_pass_final.vcf"
     process = Popen(cmd, shell=True, stdout=PIPE)
-    all_charles = process.communicate()[0]
+    all_charles = process.communicate()[0].split("'")[1].split('\n')[0]
     print(all_charles)
     cmd = "grep -vc \"#\" output/fixed_HG00513.vcf"
     process = Popen(cmd, shell=True, stdout=PIPE)
-    all_ours = process.communicate()[0]
+    all_ours = process.communicate()[0].split("'")[1].split('\n')[0]
     cmd = "grep -vc \"#\" uniq_comparison.vcf"
     process = Popen(cmd, shell=True, stdout=PIPE)
-    all_intersect = process.communicate()[0]
+    all_intersect = process.communicate()[0].split("'")[1].split('\n')[0]
     
     print("All detected by us: " + all_ours + " All detected by Charles Lee: " + all_charles + " All common between those two sets: " + all_intersect)
     print("We detect " + all_intersect/all_charles + "% of Charles Lee SVs using " + all_ours/all_charles + "% of our set")
