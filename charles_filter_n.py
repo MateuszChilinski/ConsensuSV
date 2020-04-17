@@ -41,7 +41,7 @@ for sample in samples:
                     callers_list.add(caller_parsed)
                 callersp = callersp[0:-1]
                 callers_no = callersp.count(',')+1
-                if(callers_no >= 3):
+                if(callers_no >= 2):
                     full_text += '\t'.join((infos[0], infos[1], infos[2], infos[3], infos[4], infos[5], infos[6], "END="+infos[7].split("END=")[1].split(";")[0] + ";ALGORITHMS="+callersp, "GT", "1/1"+"\n"))
             else:
                 full_text += line
