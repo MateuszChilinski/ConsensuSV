@@ -69,7 +69,7 @@ for sample in samples:
     all_intersect = str(process.communicate()[0]).split("'")[1].split(r"\n")[0]
     
     print("All detected by us: " + all_ours + " All detected by Charles Lee: " + all_charles + " All common between those two sets: " + all_intersect)
-    print("We detect " + all_intersect/all_charles + "% of Charles Lee SVs using " + all_ours/all_charles + "% of our set")
+    print("We detect " + str(float(all_intersect)/float(all_charles)) + "% of Charles Lee SVs using " + str(float(all_ours)/float(all_charles)) + "% of our set")
     os.remove('charles_pass')
     os.remove('charles_pass2')
     os.remove('charles_pass_final.vcf')
