@@ -54,7 +54,7 @@ for sample in samples:
     print(cmd)
     process = Popen(cmd, shell=True, stdout=PIPE)
     output = process.communicate()
-
+    print(output)
     os.remove('charles_pass')
     os.remove('charles_pass2')
     os.remove('charles_pass_final.vcf')
