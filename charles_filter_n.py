@@ -60,6 +60,7 @@ for sample in samples:
     cmd = "grep -vc \"#\" charles_pass_final.vcf"
     process = Popen(cmd, shell=True, stdout=PIPE)
     all_charles = process.communicate()
+    print(all_charles)
     cmd = "grep -vc \"#\" output/fixed_HG00513.vcf"
     process = Popen(cmd, shell=True, stdout=PIPE)
     all_ours = process.communicate()
