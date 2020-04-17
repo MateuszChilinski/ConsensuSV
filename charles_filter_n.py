@@ -59,7 +59,7 @@ for sample in samples:
     process.communicate()
     cmd = "grep -vc \"#\" charles_pass_final.vcf"
     process = Popen(cmd, shell=True, stdout=PIPE)
-    all_charles = process.communicate()[0].split("'")[1].split('\n')[0]
+    all_charles = str(process.communicate()[0])
     print(all_charles)
     cmd = "grep -vc \"#\" output/fixed_HG00513.vcf"
     process = Popen(cmd, shell=True, stdout=PIPE)
