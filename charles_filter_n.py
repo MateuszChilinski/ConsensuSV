@@ -41,7 +41,7 @@ for sample in samples:
                     callers_list.add(caller_parsed)
                 callersp = callersp[0:-1]
                 callers_no = callersp.count(',')+1
-                if(callers_no >= 2):
+                if(callers_no >= 3):
                     full_text += '\t'.join((infos[0], infos[1], infos[2], infos[3], infos[4], infos[5], infos[6], "END="+infos[7].split("END=")[1].split(";")[0] + ";ALGORITHMS="+callersp, "GT", "1/1"+"\n"))
             else:
                 full_text += line
@@ -50,7 +50,7 @@ for sample in samples:
         fout.write(full_text)
     output = outputs[i]
     i += 1
-    cmd = "bedtools intersect -wa -header -sorted -f 0.5 -r -a charles_HG00513.vcf -b output/fixed_HG00513.vcf -g ../../merging_new_callings/human.hg19.genome > comparison.vcf"
+    cmd = "bedtools intersect -wa -header -sorted -f 0.8 -r -a charles_HG00513.vcf -b output/fixed_HG00513.vcf -g ../../merging_new_callings/human.hg19.genome > comparison.vcf"
     print(cmd)
     process = Popen(cmd, shell=True, stdout=PIPE)
     process.communicate()
