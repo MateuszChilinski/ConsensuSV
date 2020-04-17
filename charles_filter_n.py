@@ -50,7 +50,7 @@ for sample in samples:
         fout.write(full_text)
     output = outputs[i]
     i += 1
-    cmd = "bedtools intersect -wa -header -sorted -f 0.8 -r -a charles_HG00513.vcf -b output/fixed_HG00513.vcf -g ../../merging_new_callings/human.hg19.genome > comparison.vcf"
+    cmd = "bedtools intersect -wa -header -sorted -f 0.8 -r -a charles_pass_final.vcf -b " + output + " -g ../../merging_new_callings/human.hg19.genome > comparison.vcf"
     print(cmd)
     process = Popen(cmd, shell=True, stdout=PIPE)
     process.communicate()
@@ -61,7 +61,7 @@ for sample in samples:
     process = Popen(cmd, shell=True, stdout=PIPE)
     all_charles = str(process.communicate()[0]).split("'")[1].split(r"\n")[0]
     print(all_charles)
-    cmd = "grep -vc \"#\" output/fixed_HG00513.vcf"
+    cmd = "grep -vc \"#\" " + output
     process = Popen(cmd, shell=True, stdout=PIPE)
     all_ours = str(process.communicate()[0]).split("'")[1].split(r"\n")[0]
     cmd = "grep -vc \"#\" uniq_comparison.vcf"
