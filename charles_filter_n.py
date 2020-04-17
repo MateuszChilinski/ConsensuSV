@@ -1,6 +1,6 @@
 import re
 import argparse
-
+import os
 parser = argparse.ArgumentParser(description='Extracts sample.')
 
 parser.add_argument('-s', '--samples', help='Samples name to compare (comma-separated).', required=True)
