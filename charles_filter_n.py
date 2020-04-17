@@ -50,11 +50,25 @@ for sample in samples:
         fout.write(full_text)
     output = outputs[i]
     i += 1
-    cmd = "bedtools intersect -wa -header -sorted -f 0.5 -r -a charles_HG00513.vcf -b output/fixed_HG00513.vcf -g ../../merging_new_callings/human.hg19.genome > comparison_charles_HG00513.vcf"
+    cmd = "bedtools intersect -wa -header -sorted -f 0.5 -r -a charles_HG00513.vcf -b output/fixed_HG00513.vcf -g ../../merging_new_callings/human.hg19.genome > comparison.vcf"
     print(cmd)
     process = Popen(cmd, shell=True, stdout=PIPE)
-    output = process.communicate()
-    print(output)
+    process.communicate()
+    cmd = "uniq comparison.vcf > uniq_comparison.vcf"
+    process = Popen(cmd, shell=True, stdout=PIPE)
+    process.communicate()
+    cmd = "grep -vc \"#\" charles_pass_final.vcf"
+    process = Popen(cmd, shell=True, stdout=PIPE)
+    process.communicate()
+    cmd = "grep -vc \"#\" output/fixed_HG00513.vcf"
+    process = Popen(cmd, shell=True, stdout=PIPE)
+    process.communicate()
+    cmd = "grep -vc \"#\" uniq_comparison.vcf"
+    process = Popen(cmd, shell=True, stdout=PIPE)
+    process.communicate()
+
     os.remove('charles_pass')
     os.remove('charles_pass2')
     os.remove('charles_pass_final.vcf')
+    os.remove('comparison.vcf')
+    os.remove('uniq_comparison.vcf')
