@@ -68,8 +68,11 @@ for sample in samples:
     process = Popen(cmd, shell=True, stdout=PIPE)
     all_intersect = str(process.communicate()[0]).split("'")[1].split(r"\n")[0]
     
+    print("== SAMPLE: " + sample + " ==")
+    print("")
     print("All detected by us: " + all_ours + " All detected by Charles Lee: " + all_charles + " All common between those two sets: " + all_intersect)
     print("We detect " + str(float(all_intersect)/float(all_charles)*100) + "% of Charles Lee SVs using " + str(float(all_intersect)/float(all_ours)*100) + "% of our set")
+    print("")
     os.remove('charles_pass')
     os.remove('charles_pass2')
     os.remove('charles_pass_final.vcf')
