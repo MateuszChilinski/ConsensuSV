@@ -1,7 +1,7 @@
 import os
 
 
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, DEVNULL, STDOUT
 from shutil import copyfile
 from os import listdir
 from os.path import isfile, isdir, join
@@ -20,7 +20,7 @@ def execute_command(cmd):
         print(cmd)
         process = Popen(cmd, shell=True, stdout=PIPE)
     else:
-        process = Popen(cmd, shell=True, stdout=subprocess.DEVNULL, stderr=STDOUT)
+        process = Popen(cmd, shell=True, stdout=DEVNULL, stderr=STDOUT)
     process.communicate()
 
 def reheader_all(dirFrom, dirTo, sv_files, sampleName):
