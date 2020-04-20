@@ -6,7 +6,7 @@ from shutil import copyfile
 from os import listdir
 from os.path import isfile, isdir, join
 from SVTools import SVTool
-debug = 1
+debug = 0
 
 def generate_header(sample_name):
     fin = open("header", "rt")
@@ -32,7 +32,7 @@ def reheader_all(dirFrom, dirTo, sv_files, sampleName):
 
     # reheader all files
     for file in sv_files:
-        cmd = r"bcftools reheader -h header_temp -o " + dirTo + file + " " + dirFrom + file
+        cmd = r"bcftools reheader -q -h header_temp -o " + dirTo + file + " " + dirFrom + file
         if(debug):
             print(cmd)
 
@@ -60,7 +60,7 @@ def preprocessFile(file, sampleName, header):
         # ensures there are no . in ref
         additional_filters = r"SVLEN=%SVLEN;SVTYPE=%SVTYPE;CIPOS=%CIPOS;CIEND=%CIEND"
 
-        cmd = r"bcftools query -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(QUAL >= 50 || QUAL = " + "\".\"" + r") && ((SVLEN = " + "\".\"" + r") || (SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50))' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[%GT]\n' -o temp/"+file+"_2 temp/"+file    
+        cmd = r"bcftools query -q -H -t chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chr22,chrX,chrY,chrM -i '(QUAL >= 50 || QUAL = " + "\".\"" + r") && ((SVLEN = " + "\".\"" + r") || (SVLEN < 50000 && SVLEN > 50) || (SVLEN > -50000 && SVLEN < -50))' -f '%CHROM\t%POS\t%ID\t%REF\t%FIRST_ALT\t%QUAL\t%FILTER\tEND=%END;"+additional_filters+r"\tGT\t[%GT]\n' -o temp/"+file+"_2 temp/"+file    
         execute_command(cmd)
 
         #os.replace("temp/"+sampleName+"/"+file+"_2", "temp/"+sampleName+"/"+file)
@@ -113,7 +113,7 @@ def findMajority(sv, freqDict, candidates):
 
     for key in freqDict:
         if(freqDict[key]/len(candidates) >= 0.7):
-            print(sv.chrom + " " + sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
+            #print(sv.chrom + " " + sv.svtype + " " + str(sv.pos) + " - " + str(sv.end))
             majorityFound = True
             winKey = key
             break

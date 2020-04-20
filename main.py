@@ -17,7 +17,7 @@ from os import listdir
 
 args = inputHandling()
 
-
+min_overlap = args.min_overlap
 
 # preprocessing of the files
 # problems with no svlen?
@@ -45,9 +45,11 @@ for sample in samples:
             shutil.rmtree(sample_temp_dir);
         os.mkdir(sample_temp_dir)
 
-        print("Preprocessing files of "+sample+"...")
+        print("Preprocessing files of "+sample+"...", end='')
 
         sv_tools = utilities.preprocessFiles(sample_dir, sample)
+
+        print(" DONE!")
     else:
         if (args.train):
             copyfile(sample_dir+"truth.vcf", sample_temp_dir+"/truth.vcf")
@@ -69,6 +71,7 @@ for sample in samples:
         else:
             if(svtool.tool == "truth"):
                 continue
+        print("\tProcessing tool " + svtool.tool + "...", end='')
         for sv in svtool.sv_list:
             if(sv.used): continue
             candidates = list()
@@ -87,7 +90,7 @@ for sample in samples:
                     if(sv.checkOverlap(sv2)):
                        candidates.append(sv2)
                        break
-            if(len(candidates) < 3): # if fewer than 3 then no point in checking it out
+            if(len(candidates) < min_overlap): # if fewer than 3 then no point in checking it out
                 continue
             if (args.train): # learning phase
                 candidates.remove(sv)
@@ -110,6 +113,7 @@ for sample in samples:
                     consensusId += 1
                 resulting_svs.append(newSv)
                 utilities.markUsedCandidates(candidates)
+        print(" DONE!")
     if not(args.train):
         header = utilities.generate_header(sample)
         with open("output.vcf", 'w') as fout:
@@ -126,21 +130,25 @@ for sample in samples:
         os.remove("temp/"+sample+"/truth.vcf")
 
 if (args.train): # learning phase
-    print("Preparing sets...")
+    print("Preparing sets...", end='')
 
     X_preprocessed_vector = utilities.preprocess_X(X_vector)
     Y_preprocessed_vector = utilities.preprocess_Y(Y_vector)
 
+    print(" DONE!")
+
     X_train, X_test, y_train, y_test = train_test_split(X_preprocessed_vector, Y_preprocessed_vector, test_size=0.1, random_state=42, shuffle=True)
     nn = MLPRegressor(hidden_layer_sizes=(14, 7), solver='lbfgs', random_state=0)
 
-    print("Creating the model...")
+    print("Creating the model...", end='')
 
     nn.fit(X_train, y_train)
 
 
     nn_score = nn.score(X_test, y_test)
     y_pred = nn.predict(X_test)
+
+    print(" DONE!")
 
     print("Score of model: " + str(nn_score))
     error = abs(y_test-y_pred)
