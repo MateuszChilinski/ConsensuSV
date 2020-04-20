@@ -68,10 +68,12 @@ for sample in samples:
         if (args.train):
             if(svtool.tool != "truth"):
                 continue
+            print("\tProcessing " + sample + "...", end='', flush=True)
         else:
             if(svtool.tool == "truth"):
                 continue
-        print("\tProcessing tool " + svtool.tool + "...", end='', flush=True)
+            print("\tProcessing tool " + svtool.tool + "...", end='', flush=True)
+
         for sv in svtool.sv_list:
             if(sv.used): continue
             candidates = list()

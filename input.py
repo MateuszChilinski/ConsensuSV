@@ -11,7 +11,7 @@ def inputHandling():
 
     parser.add_argument('-m', '--min_overlap', help='Minimum number of SVs in the neighbourhood for the SV to be reported (default 3).', type=int, default=3)
 
-    parser.add_argument('-t', '--train', help='Creates new model. Requires truth.vcf to be present in all the sv folders. VCF file truth.vcf is preprocessed even if flag --no_preprocess is set.', action="store_true", required=False)
+    parser.add_argument('-t', '--train', help='Creates new model. Requires truth.vcf to be present in all the sv folders. VCF file truth.vcf is preprocessed even if flag --no_preprocess is set. If you train the model, you need to rerun the program to get the consensus.', action="store_true", required=False)
 
     parser.add_argument('-np', '--no_preprocess', help='Flag used for skipping the preprocessing process - all the preprocessed files should be in temp/ folder.', action="store_true", required=False)
 
