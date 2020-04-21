@@ -104,7 +104,7 @@ for sample in samples:
                 # maybe remove all candidates from svtool once consensus was established based on it?
                 (majorityFound, firstMajor) = utilities.findMajority(sv, freqDict, candidates)
                 if(majorityFound):
-                    newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref, firstMajor.end, firstMajor.gt, firstMajor.svlen, firstMajor.svtype, 
+                    newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref[0], firstMajor.end, utilities.generateGenotype(candidates), firstMajor.svlen, firstMajor.svtype, 
                                      -10, 10, -10, 10, utilities.generateAlgorithmsList(candidates))
                     consensusId += 1
                 else:
