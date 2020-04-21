@@ -111,7 +111,7 @@ for sample in samples:
                     result = loaded_model.predict(utilities.preprocess_X([candidates]))
                     pos = result[0]
                     end = result[1]
-                    newSv = SVariant("consensus", None, sv.chrom, int(round(pos)), "consensus_"+str(consensusId), sv.ref, int(round(end)), sv.gt, int(round(pos-end)), sv.svtype, -10, 10, -10, 10, utilities.generateAlgorithmsList(candidates))
+                    newSv = SVariant("consensus", None, sv.chrom, int(round(pos)), "consensus_"+str(consensusId), sv.ref[0], int(round(end)), utilities.generateGenotype(candidates), int(round(pos-end)), sv.svtype, -10, 10, -10, 10, utilities.generateAlgorithmsList(candidates))
                     consensusId += 1
                 resulting_svs.append(newSv)
                 utilities.markUsedCandidates(candidates)

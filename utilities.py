@@ -172,3 +172,18 @@ def generateAlgorithmsList(candidates):
     for candidate in candidates:
         algorithms += candidate.tool+","
     return algorithms[0:-1]
+
+def generateGenotype(candidates):
+    gt0 = 0
+    gt1 = 0
+    for candidate in candidates:
+        if(candidate.gt == "0/1"):
+            gt0 += 1
+        elif(candidate.gt == "1/1"):
+            gt1 += 1
+    if(gt0 == 0 and gt1 == 0):
+        return "./."
+    if(gt1 >= gt0):
+        return "1/1"
+    else:
+        return "0/1"
