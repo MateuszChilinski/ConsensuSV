@@ -20,7 +20,7 @@ class SVariant:
             self.algorithms = algorithms
     def printVcfLine(self):
         return '\t'.join((self.chrom, str(self.pos), self.id, self.ref, "<"+self.svtype+">",
-                 ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE="+self.svtype+";ALGORITHM="+self.algorithms+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt))
+                 ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE="+self.svtype+";ALGORITHM="+self.algorithms+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt, "\n"))
     def parse_line(self, line):
         values = line.split("\t")
         self.chrom = values[0]
