@@ -177,9 +177,9 @@ def generateGenotype(candidates):
     gt0 = 0
     gt1 = 0
     for candidate in candidates:
-        if(candidate.gt == "0/1"):
+        if("0/1" in candidate.gt):
             gt0 += 1
-        elif(candidate.gt == "1/1"):
+        elif("1/1" in candidate.gt):
             gt1 += 1
     if(gt0 == 0 and gt1 == 0):
         return "./."
