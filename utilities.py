@@ -184,6 +184,6 @@ def generateGenotype(candidates):
     if(gt0 == 0 and gt1 == 0):
         return "./."
     if(gt1 >= gt0):
-        return "1/1"
+        return r"1/1"
     else:
-        return "0/1"
+        return r"0/1"
