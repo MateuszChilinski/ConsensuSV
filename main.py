@@ -102,16 +102,19 @@ for sample in samples:
                 freqDict = utilities.buildFreqDict(candidates)
 
                 # maybe remove all candidates from svtool once consensus was established based on it?
+                consensusGT = utilities.generateGenotype(candidates)
+                if("./." in consensusGT): # it's not really well-genotyped anyway, so not worth adding
+                    continue
                 (majorityFound, firstMajor) = utilities.findMajority(sv, freqDict, candidates)
                 if(majorityFound):
-                    newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref[0], firstMajor.end, utilities.generateGenotype(candidates), firstMajor.svlen, firstMajor.svtype, 
+                    newSv = SVariant("consensus", None, firstMajor.chrom, firstMajor.pos, "consensus_"+str(consensusId), firstMajor.ref[0], firstMajor.end, consensusGT, firstMajor.svlen, firstMajor.svtype, 
                                      -10, 10, -10, 10, utilities.generateAlgorithmsList(candidates))
                     consensusId += 1
                 else:
                     result = loaded_model.predict(utilities.preprocess_X([candidates]))
                     pos = result[0]
                     end = result[1]
-                    newSv = SVariant("consensus", None, sv.chrom, int(round(pos)), "consensus_"+str(consensusId), sv.ref[0], int(round(end)), utilities.generateGenotype(candidates), int(round(pos-end)), sv.svtype, -10, 10, -10, 10, utilities.generateAlgorithmsList(candidates))
+                    newSv = SVariant("consensus", None, sv.chrom, int(round(pos)), "consensus_"+str(consensusId), sv.ref[0], int(round(end)), consensusGT, int(round(pos-end)), sv.svtype, -10, 10, -10, 10, utilities.generateAlgorithmsList(candidates))
                     consensusId += 1
                 resulting_svs.append(newSv)
                 utilities.markUsedCandidates(candidates)
