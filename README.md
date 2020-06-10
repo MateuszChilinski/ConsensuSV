@@ -2,7 +2,7 @@
 A tool for getting consensus of SVs.
 
 Requirements:
-* bcftools (https://samtools.github.io/bcftools/)
+* bcftools (https://samtools.github.io/bcftools/) in PATH
 
 Options:
 
