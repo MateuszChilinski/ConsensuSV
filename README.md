@@ -1,6 +1,9 @@
 # ConsensuSV
 A tool for getting consensus of SVs.
 
+Requirements:
+* bcftools (https://samtools.github.io/bcftools/)
+
 Options:
 
 Short option | Long option | Description
