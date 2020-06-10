@@ -15,3 +15,12 @@ Short option | Long option | Description
 The samples should follow the rule seen in the following figure:
 
 ![Sample folder structure](https://github.com/MateuszChilinski/ConsensuSV/blob/master/sample_folder_example.png)
+
+The example command used for the training of the neural network model:
+```shell
+python main.py -f /home/data/autoimmuno/autoimuno_restricted/sv-callings/sv_trios/ -t
+```
+The example command used for getting the consensus SVs:
+```shell
+python main.py -f /home/data/autoimmuno/autoimuno_restricted/sv-callings/sv_trios/ -o consensuSV
+```
