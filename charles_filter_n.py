@@ -50,7 +50,7 @@ for sample in samples:
         fout.write(full_text)
     output = outputs[i]
     i += 1
-    cmd = "bedtools intersect -wa -header -sorted -f 0.8 -r -a charles_pass_final.vcf -b " + output + " -g ../../merging_new_callings/human.hg19.genome > comparison.vcf"
+    cmd = "bedtools intersect -wa -header -sorted -f 0.8 -r -a charles_pass_final.vcf -b " + output + " > comparison.vcf"
     print(cmd)
     process = Popen(cmd, shell=True, stdout=PIPE)
     process.communicate()
