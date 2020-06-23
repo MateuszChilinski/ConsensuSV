@@ -30,7 +30,7 @@ for sample in samples:
     with open('charles_pass2', 'r') as f:
         for line in f:
             if not('#' in line):
-                callers = re.findall(r""+sample+r'HG00512:.{0,20},', line)
+                callers = re.findall(r""+sample+r':.{0,20},', line)
                 infos = line.split('\t')
                 callersp = ""
                 callers_list = set()
