@@ -5,6 +5,7 @@ import sys
 import pickle
 import utilities
 import shutil
+import time
 
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
@@ -14,11 +15,15 @@ from SVTools import SVariant
 from shutil import copyfile
 from os.path import isdir, join
 from os import listdir
+import re
 
 args = inputHandling()
 
 min_overlap = args.min_overlap
-
+with open(min_overlap) as fh:
+    min_overlaps = dict(re.findall(r'(\S+)\s+(.+)', fh.read()))
+for key, value in min_overlaps.items():
+    min_overlaps[key] = int(value)
 # preprocessing of the files
 # problems with no svlen?
 
@@ -86,13 +91,15 @@ for sample in samples:
                 for sv2 in svtool2.sv_list:
                     if(sv.chrom != sv2.chrom):
                         continue
+                    if(sv.svtype != sv2.svtype):
+                        continue
                     if(sv2.pos > sv.pos+500): # fix later! it should be dependend on ci or % of svlen
                         break
                     if(sv2.used): continue
                     if(sv.checkOverlap(sv2)):
                        candidates.append(sv2)
                        break
-            if(len(candidates) < min_overlap): # if fewer than 3 then no point in checking it out
+            if(len(candidates) < min_overlaps[sv.svtype]): # if fewer than 3 then no point in checking it out
                 continue
             if (args.train): # learning phase
                 candidates.remove(sv)

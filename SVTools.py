@@ -55,15 +55,19 @@ class SVariant:
         self.ciend2 = int(ciend[1])
 
         self.used = False
-    def parse_type(self, type):
-        if "del" in type.casefold():
+    def parse_type(self, svtype):
+        if "del" in svtype.casefold():
             return "DEL"
-        if "inv" in type.casefold():
+        if "inv" in svtype.casefold():
             return "INV"
-        if "ins" in type.casefold():
+        if "ins" in svtype.casefold():
             return "INS"
-        if "dup" in type.casefold():
+        if "dup" in svtype.casefold():
             return "DUP"
+        if "tra" in svtype.casefold():
+            return "TRA"
+        if "cnv" in svtype.casefold():
+            return "CNV"
         return "UNK"
     def print_sv(self):
         print(self.svtype + ": " + self.chrom + " " + str(self.pos) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " - " + str(self.end) + "(" + str(self.cipos1) +", " + str(self.cipos2) + ")" + " LEN: " + str(self.svlen) + " GT: " + self.gt)
