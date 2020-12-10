@@ -17,6 +17,10 @@ from os.path import isdir, join
 from os import listdir
 import re
 
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
+
 args = inputHandling()
 
 min_overlap = args.min_overlap
