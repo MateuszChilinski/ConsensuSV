@@ -177,7 +177,7 @@ def generateGenotype(candidates):
     gt0 = 0
     gt1 = 0
     for candidate in candidates:
-        if("0/1" in candidate.gt):
+        if("0/1" in candidate.gt or "./." in candidate.gt): # if genotype is ./. it's worth adding as 0/1, because the tool detected there something after all
             gt0 += 1
         elif("1/1" in candidate.gt):
             gt1 += 1
