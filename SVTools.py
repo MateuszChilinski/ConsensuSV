@@ -19,8 +19,14 @@ class SVariant:
             self.used = False
             self.algorithms = algorithms
     def printVcfLine(self):
+        sv_len = self.svlen
+        end = self.end
+        if(self.svtype == "INS" or self.svtype == "DUP"):
+            sv_len = abs(sv_len)
+            if(self.svtype == "INS"):
+                end = self.pos
         return '\t'.join((self.chrom, str(self.pos), self.id, self.ref, "<"+self.svtype+">",
-                 ".", "PASS", "END="+str(self.end)+";SVLEN="+str(self.svlen)+";SVTYPE="+self.svtype+";ALGORITHM="+self.algorithms+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt, "\n"))
+                 ".", "PASS", "END="+str(end)+";SVLEN="+str(sv_len)+";SVTYPE="+self.svtype+";ALGORITHM="+self.algorithms+";CIPOS="+str(self.cipos1)+","+str(self.cipos2)+";CIEND="+str(self.ciend1)+","+str(self.ciend2), "GT", self.gt, "\n"))
     def parse_line(self, line):
         values = line.split("\t")
         self.chrom = values[0]
@@ -37,6 +43,8 @@ class SVariant:
         self.svlen = int(self.svlen)
 
         self.svtype = self.parse_type(info[2].split("=")[1])
+        if(self.svtype == "INS"):
+            self.end = self.pos+abs(self.svlen)
         cipos = info[3].split("=")[1]
         ciend = info[4].split("=")[1]
 
@@ -84,9 +92,15 @@ class SVariant:
         maxEnd1 = self.end+self.ciend2
         minEnd2 = sv2.end+self.ciend1
         maxEnd2 = sv2.end+self.ciend2
-        if(max(minPos1, minPos2)-100 <= min(maxPos1, maxPos2)):
-            if(max(minEnd1, minEnd2)-100 <= min(maxEnd1, maxEnd2)):
-                return True
+
+        max_between = 100
+        if(self.svtype == "INS"):
+            if(abs(self.pos-sv2.pos) < max_between and abs(self.svlen-sv2.svlen) < max_between):
+                return True 
+        else:
+            if(max(minPos1, minPos2)-max_between <= min(maxPos1, maxPos2)):
+                if(max(minEnd1, minEnd2)-max_between <= min(maxEnd1, maxEnd2)):
+                    return True
         return False
 
 class SVTool:
