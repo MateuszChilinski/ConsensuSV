@@ -8,7 +8,7 @@ Options:
 
 Short option | Long option | Description
 -------------- | --------------- | ---------------
--f | --sv_folder | Folder containing folders of samples with raw outputs from SV callers (comma-separated). More information on the structure of the samples folder is shown below.
+-f | --sv_folder | The master directory containing folders of samples with raw outputs from SV callers (comma-separated). More information on the structure of the samples folder in the next section.
 -mod | --model | Model used for SV discovery (default: default.model).
 -o | --output | Output file prefix.
 -m | --min_overlap | File with minimum numbers of SVs in the neighbourhood for the SV to be reported (default min_overlaps).
